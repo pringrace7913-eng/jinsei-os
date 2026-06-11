@@ -4,7 +4,7 @@
 <meta name="robots" content="noindex, nofollow">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>くらし君 作業OS ｜ 3ペルソナ・後追い管理デモ</title>
+<title>くらし君 人生OS ｜ やること後追い（人生の段取り）</title>
 <style>
   :root{
     --navy:#0e1b3a; --navy2:#16264f; --card:#1d2f5c; --line:#2c4275;
@@ -121,17 +121,17 @@
 <div class="demo-flag">DEMO ・ SAMPLE ・ FICTIONAL（架空データ）</div>
 
 <header>
-  <div class="brand">株式会社くらし君 ／ <b>作業OS</b>・後追い管理</div>
+  <div class="brand">株式会社くらし君 ／ <b>人生OS</b>・やること後追い</div>
 </header>
 <div class="persona">
-  <button class="on" data-p="worker">作業層<small>現場が迷わない</small></button>
-  <button data-p="manager">管理者層<small>滞留が見える</small></button>
-  <button data-p="exec">経営層<small>属人化を解く</small></button>
+  <button class="on" data-p="worker">今やる<small>今日の3件</small></button>
+  <button data-p="manager">ためない<small>分野別の滞留</small></button>
+  <button data-p="exec">1年後<small>差がつく</small></button>
 </div>
-<h1 id="hd-title">今日見る画面</h1>
-<div class="lead" id="hd-lead">朝30秒。未対応・期限超過・差し戻しだけ見れば、今日やる3件が分かります。</div>
+<h1 id="hd-title">今やること</h1>
+<div class="lead" id="hd-lead">朝1分。未対応・期限超過・差し戻しだけ見れば、今日やる3件が分かります。</div>
 
-<!-- ===== 作業層 ===== -->
+<!-- ===== 今やる ===== -->
 <div class="view on" id="v-worker">
   <section class="screen on" id="s-today">
     <div class="kpis">
@@ -153,8 +153,8 @@
     </select>
     <label>詰まった理由（任意・1タップ）</label>
     <select id="in-reason">
-      <option value="">―</option><option>相手と連絡つかず</option>
-      <option>担当者が不在</option><option>情報待ち</option><option>時間がなかった</option>
+      <option value="">―</option><option>必要書類が見つからない</option>
+      <option>手続きが面倒で後回し</option><option>何から始めるか分からない</option><option>時間がなかった</option>
     </select>
     <button class="btn" id="submit">この内容で記録する</button>
     <div class="timer">⏱ 想定操作時間：約30秒（3タップ）</div>
@@ -171,7 +171,7 @@
   </section>
 </div>
 
-<!-- ===== 管理者層 ===== -->
+<!-- ===== ためない ===== -->
 <div class="view" id="v-manager">
   <div class="page">
     <div class="kpis">
@@ -179,59 +179,52 @@
       <div class="kpi warn"><div class="n" id="m-stuck">4</div><div class="l">滞留中</div></div>
       <div class="kpi acc"><div class="n">2.4</div><div class="l">平均滞留(日)</div></div>
     </div>
-    <div class="scr-title">誰が止めているか <small>担当別の負荷</small></div>
+    <div class="scr-title">どの分野がたまってる？ <small>分野別の滞留</small></div>
     <div id="m-load"></div>
-    <div class="scr-title">いま滞留している後追い <small>期限超過が先頭</small></div>
+    <div class="scr-title">いま後回しになっていること <small>期限超過が先頭</small></div>
     <div id="m-stuck-list"></div>
     <div class="insight">
-      <b>確認の声かけ：週47回 → 週12回</b>（見える化の前後・架空）。「あれどうなった？」を管理者が毎回聞かなくても、この画面で滞留と担当が一目で分かります。
+      <b>「あれやったっけ？」が消える</b>。頭で覚えておかなくても、この画面が代わりに覚えています。お金・手続き・健康のどこが後回しか一目で分かります。
     </div>
   </div>
 </div>
 
-<!-- ===== 経営層 ===== -->
+<!-- ===== 1年後 ===== -->
 <div class="view" id="v-exec">
   <div class="page">
-    <div class="scr-title">属人化リスク <small>後追いが特定の人に集中</small></div>
-    <div class="meter"><div class="f" style="width:60%">事務・佐藤 60%</div></div>
-    <div class="ba-cap">後追いの6割が1人に集中。その人が休むと止まる＝事業の単一障害点。</div>
+    <div class="scr-title">後回しリスク <small>特定の分野に偏って後回し</small></div>
+    <div class="meter"><div class="f" style="width:60%">お金の段取り 60%</div></div>
+    <div class="ba-cap">やることの6割が「お金」の段取りで後回し。複利は早いほど効くので、ここが一番もったいない分野です。</div>
 
-    <div class="scr-title">30日テストで変わること <small>Before → After（架空）</small></div>
+    <div class="scr-title">1年でこう変わる <small>Before → After（架空）</small></div>
     <div class="ba">
-      <div class="box b4"><div class="n">11件</div><div class="c">放置の後追い</div></div>
+      <div class="box b4"><div class="n">11件</div><div class="c">放置のやること</div></div>
       <div class="arrow">→</div>
-      <div class="box af"><div class="n">0件</div><div class="c">朝30秒で可視化</div></div>
+      <div class="box af"><div class="n">0件</div><div class="c">朝1分で見える化</div></div>
     </div>
     <div class="ba">
-      <div class="box b4"><div class="n">頭の中</div><div class="c">引き継ぎ不可</div></div>
+      <div class="box b4"><div class="n">頭の中</div><div class="c">忘れる・抜ける</div></div>
       <div class="arrow">→</div>
-      <div class="box af"><div class="n">完了条件</div><div class="c">誰でも引き継げる</div></div>
+      <div class="box af"><div class="n">完了条件</div><div class="c">迷わず片づく</div></div>
     </div>
 
-    <div class="scr-title">承継できる状態になる</div>
-    <div class="check"><span class="mk">✓</span><span>各業務に「完了条件」が言語化される → 担当が代わっても同じ品質で回る</span></div>
-    <div class="check"><span class="mk">✓</span><span>ログが証跡として残る → 経営者が見なくても、見たい時に確認できる</span></div>
-    <div class="check"><span class="mk">✓</span><span>属人化が解け、採用・退職・休職のリスクが下がる</span></div>
-
-    <div class="scr-title">投資対効果（仮説）</div>
-    <div class="roi">
-      <div class="c"><div class="n">月1,800円</div><div class="l">追加ライセンス</div></div>
-      <div class="c"><div class="n">月5–10h</div><div class="l">確認工数の削減</div></div>
-      <div class="c"><div class="n">15–25倍</div><div class="l">ROI仮説</div></div>
-    </div>
+    <div class="scr-title">ちゃんと片づく人になる</div>
+    <div class="check"><span class="mk">✓</span><span>大事な段取りに「完了条件」がつく → 何をすれば終わりか迷わない</span></div>
+    <div class="check"><span class="mk">✓</span><span>やったことがログに残る → 来年の自分（確定申告・見直し）が困らない</span></div>
+    <div class="check"><span class="mk">✓</span><span>後回しが減り、お金の時間（複利）を逃さない</span></div>
 
     <div class="insight">
-      <b>買う理由：</b>増えるのは画面1つ。やることは増やさず、止まっている仕事と属人化が見えるようになる。まず1業務だけ、30日、架空またはマスクデータ、外部共有なしで試せます。
+      <b>ポイント：</b>増えるのは画面1つ。やることは増やさず、後回しになっている大事な段取りが見えるようになります。まずは1件だけ、今日やってみましょう。
     </div>
-    <button class="btn" id="cta">30日テストを1業務だけ試す</button>
-    <button class="btn ghost" id="cta2" style="margin-top:10px">作業層デモをもう一度見る</button>
-    <div class="flash" id="flash2" style="margin-top:14px">✓ これはデモです。実際の申込・契約・送信は行いません（Red＝本番化時に確認）。</div>
+    <button class="btn" id="cta">まず1件だけ、今日やってみる</button>
+    <button class="btn ghost" id="cta2" style="margin-top:10px">今やること画面に戻る</button>
+    <div class="flash" id="flash2" style="margin-top:14px">✓ これはデモです。実際の申込・契約・送信は行いません。</div>
   </div>
 </div>
 
 <nav class="show" id="nav">
-  <button class="on" data-s="today" data-t="今日見る画面" data-l="朝30秒。未対応・期限超過・差し戻しだけ見れば、今日やる3件が分かります。"><span class="ic">📋</span>今日</button>
-  <button data-s="input" data-t="30秒入力" data-l="表を触らず、プルダウン3タップで作業の状態を記録します。"><span class="ic">⚡</span>入力</button>
+  <button class="on" data-s="today" data-t="今やること" data-l="朝1分。未対応・期限超過・差し戻しだけ見れば、今日やる3件が分かります。"><span class="ic">📋</span>今日</button>
+  <button data-s="input" data-t="30秒入力" data-l="表を触らず、プルダウン3タップでやることの状態を記録します。"><span class="ic">⚡</span>入力</button>
   <button data-s="log" data-t="記録ログ" data-l="入力は1件1行で積み上がり、後から証跡として確認できます。"><span class="ic">🧾</span>ログ</button>
   <button data-s="dash" data-t="ダッシュボード" data-l="入力した瞬間に、状態別の件数が自動で集計されます。"><span class="ic">📊</span>ダッシュ</button>
 </nav>
@@ -244,20 +237,20 @@ const STATUS = {
   back:{label:'差し戻し', cls:'b-back', color:'#b794ff'},
 };
 let tasks = [
-  {id:1, name:'問い合わせの返信フォロー', who:'営業・佐藤', due:'6/9', status:'todo', over:true,
-   cond:'相手へ電話 or メールで連絡し、返信 or 次の予定を確認できたら完了', next:'本日中に連絡'},
-  {id:2, name:'見積りの送付', who:'営業・田中', due:'6/10', status:'doing', over:true,
-   cond:'見積りを送付し、検討状況の返信をもらえたら完了', next:'見積り送付'},
-  {id:3, name:'日程変更の再調整', who:'事務・佐藤', due:'6/12', status:'todo', over:false,
-   cond:'代わりの日程を案内し、再調整 or 辞退の意思確認ができたら完了', next:'候補日を案内'},
-  {id:4, name:'納品後のフォロー確認', who:'現場・鈴木', due:'6/11', status:'back', over:false,
-   cond:'フォロー日を確定し登録できたら完了。日程未確定のため差し戻し中', next:'希望日を再確認'},
-  {id:5, name:'定期点検の案内', who:'事務・佐藤', due:'6/8', status:'done', over:false,
-   cond:'案内を送付済み。返信受領で完了', next:'―'},
+  {id:1, name:'つみたてNISAの口座開設', who:'お金', due:'6/9', status:'todo', over:true,
+   cond:'証券口座を開き、毎月の積立額を設定できたら完了', next:'本日中に申込'},
+  {id:2, name:'使ってないサブスクの解約', who:'お金', due:'6/10', status:'doing', over:true,
+   cond:'使っていないサブスクを解約し、請求が止まるのを確認できたら完了', next:'解約手続き'},
+  {id:3, name:'ふるさと納税の申込', who:'お金', due:'6/12', status:'todo', over:false,
+   cond:'寄付を申し込み、ワンストップ申請書を返送できたら完了', next:'返礼品を選ぶ'},
+  {id:4, name:'生命保険の見直し', who:'手続き', due:'6/11', status:'back', over:false,
+   cond:'今の保障を確認し、見直す or 据え置きを決めたら完了。比較中のため差し戻し', next:'必要な保障を確認'},
+  {id:5, name:'健康診断の予約', who:'健康', due:'6/8', status:'done', over:false,
+   cond:'健診を予約し、日程を確定済み。受診で完了', next:'―'},
 ];
 let logs = [
-  {t:'8:42', name:'定期点検の案内', status:'done', reason:''},
-  {t:'8:40', name:'納品後のフォロー確認', status:'back', reason:'情報待ち'},
+  {t:'8:42', name:'健康診断の予約', status:'done', reason:''},
+  {t:'8:40', name:'生命保険の見直し', status:'back', reason:'必要書類が見つからない'},
 ];
 const $ = s => document.querySelector(s);
 const order = ['todo','doing','back','done'];
@@ -268,7 +261,7 @@ function renderToday(){
   $('#today-list').innerHTML = prio.map(t=>{const st=STATUS[t.status];
     return `<div class="card"><div class="top"><div class="name">${t.name}</div>
       <span class="badge ${st.cls}">${st.label}</span></div>
-      <div class="meta"><span>担当 <b>${t.who}</b></span>
+      <div class="meta"><span>分野 <b>${t.who}</b></span>
       <span>期限 <b class="${t.over?'over-tag':''}">${t.due}${t.over?' ⚠超過':''}</b></span>
       <span>次 <b>${t.next}</b></span></div>
       <div class="done-cond"><b>完了条件：</b>${t.cond}</div></div>`;}).join('');
@@ -289,8 +282,8 @@ function renderDash(){
       <span class="v">${v}</span></div>`;}).join('');
   const over=tasks.filter(t=>t.over&&t.status!=='done').length;
   $('#dash-insight').innerHTML = over>0
-    ? `<b>要注意：</b>期限超過が <b>${over}件</b>。属人化していると「誰が止めているか」が見えませんが、この画面なら朝30秒で分かります。`
-    : `<b>良好：</b>期限超過はゼロ。後追いが滞留せず回っています。`;
+    ? `<b>要注意：</b>期限超過が <b>${over}件</b>。頭の中だけだと「何が後回しか」を忘れがちですが、この画面なら朝1分で分かります。`
+    : `<b>良好：</b>期限超過はゼロ。やることをためずに片づけられています。`;
 }
 function renderManager(){
   const open = tasks.filter(t=>t.status!=='done');
@@ -309,7 +302,7 @@ function renderManager(){
     const st=STATUS[t.status];
     return `<div class="card"><div class="top"><div class="name" style="font-size:14px">${t.name}</div>
       <span class="badge ${st.cls}">${st.label}</span></div>
-      <div class="meta"><span>担当 <b>${t.who}</b></span>
+      <div class="meta"><span>分野 <b>${t.who}</b></span>
       <span>期限 <b class="${t.over?'over-tag':''}">${t.due}${t.over?' ⚠超過':''}</b></span></div></div>`;}).join('');
 }
 function renderAll(){ renderToday(); renderInput(); renderLog(); renderDash(); renderManager(); }
@@ -336,9 +329,9 @@ document.querySelectorAll('#nav button').forEach(b=>{
 
 // persona switch
 const personaMeta={
-  worker:{t:'今日見る画面', l:'朝30秒。未対応・期限超過・差し戻しだけ見れば、今日やる3件が分かります。'},
-  manager:{t:'管理者の画面', l:'誰の後追いが、どれだけ滞留しているか。聞いて回らなくても一目で分かります。'},
-  exec:{t:'経営者の画面', l:'属人化を解き、引き継げる状態にする。30日テストで何が変わるかを示します。'},
+  worker:{t:'今やること', l:'朝1分。未対応・期限超過・差し戻しだけ見れば、今日やる3件が分かります。'},
+  manager:{t:'ためてる一覧', l:'お金・手続き・健康のどの分野が、どれだけ後回しになっているか一目で分かります。'},
+  exec:{t:'1年でこう変わる', l:'後回しを片づけると、お金の時間（複利）を逃さない。1年で何が変わるかを示します。'},
 };
 function switchPersona(p){
   document.querySelectorAll('.persona button').forEach(x=>x.classList.toggle('on',x.dataset.p===p));
@@ -351,7 +344,7 @@ function switchPersona(p){
   window.scrollTo(0,0);
 }
 document.querySelectorAll('.persona button').forEach(b=>b.addEventListener('click',()=>switchPersona(b.dataset.p)));
-$('#cta').addEventListener('click',()=>{const f=$('#flash2'); f.style.display='block'; setTimeout(()=>f.style.display='none',2600);});
+$('#cta').addEventListener('click',()=>switchPersona('worker'));
 $('#cta2').addEventListener('click',()=>switchPersona('worker'));
 
 renderAll();
