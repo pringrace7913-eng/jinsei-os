@@ -165,7 +165,7 @@
     </div>
   </div>
 </div>
-<div class="note">※すべて仮の数字・たとえばの計算（投資のおすすめではありません）。年3%は元本保証ではなく、減る年もあります。「お金に働いてもらう」＝つみたてNISAなどを想定。男女・職業の数字は公的統計の平均値ベース。</div>
+<div class="note">※すべて仮の数字・たとえばの計算（投資のおすすめではありません）。年3%は元本保証ではなく、減る年もあります。「お金に働いてもらう」＝つみたてNISAなどを想定。<br>出典：男女の平均給与＝国税庁「民間給与実態統計調査」令和5年分（男性569万・女性316万）／世帯はその合算（共働き想定）／公務員＝人事院・総務省の給与実態調査／老後2,000万＝金融庁・金融審議会報告書(2019)に基づく概数。</div>
 <div class="spark" id="spark">🎉</div>
 
 <script>
@@ -235,7 +235,7 @@ function update(animate){
   else {
     const needM=neededMonthly(); const gap=needM-monthly();
     let line='';
-    if(!state.nisa){ line='<b>「お金に働いてもらう」をON</b>にすると、一気にラクになります。'; }
+    if(!state.nisa){ line='<b>「お金に働いてもらう」をON</b>にすると、ぐっとラクになります。'; }
     else if(gap>0){ line='あと<b>月'+yen(gap)+'</b>増やせば2,000万ちょうど。'; }
     c.innerHTML=line+(t?'　今日やる1つ：<b>'+t.name+'</b>':'');
   }
