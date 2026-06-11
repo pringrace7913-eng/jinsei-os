@@ -153,7 +153,7 @@
     </select>
     <label>詰まった理由（任意・1タップ）</label>
     <select id="in-reason">
-      <option value="">―</option><option>患者さんと連絡つかず</option>
+      <option value="">―</option><option>相手と連絡つかず</option>
       <option>担当者が不在</option><option>情報待ち</option><option>時間がなかった</option>
     </select>
     <button class="btn" id="submit">この内容で記録する</button>
@@ -193,7 +193,7 @@
 <div class="view" id="v-exec">
   <div class="page">
     <div class="scr-title">属人化リスク <small>後追いが特定の人に集中</small></div>
-    <div class="meter"><div class="f" style="width:60%">受付・佐藤 60%</div></div>
+    <div class="meter"><div class="f" style="width:60%">事務・佐藤 60%</div></div>
     <div class="ba-cap">後追いの6割が1人に集中。その人が休むと止まる＝事業の単一障害点。</div>
 
     <div class="scr-title">30日テストで変わること <small>Before → After（架空）</small></div>
@@ -210,7 +210,7 @@
 
     <div class="scr-title">承継できる状態になる</div>
     <div class="check"><span class="mk">✓</span><span>各業務に「完了条件」が言語化される → 担当が代わっても同じ品質で回る</span></div>
-    <div class="check"><span class="mk">✓</span><span>ログが証跡として残る → 院長が見なくても、見たい時に確認できる</span></div>
+    <div class="check"><span class="mk">✓</span><span>ログが証跡として残る → 経営者が見なくても、見たい時に確認できる</span></div>
     <div class="check"><span class="mk">✓</span><span>属人化が解け、採用・退職・休職のリスクが下がる</span></div>
 
     <div class="scr-title">投資対効果（仮説）</div>
@@ -244,20 +244,20 @@ const STATUS = {
   back:{label:'差し戻し', cls:'b-back', color:'#b794ff'},
 };
 let tasks = [
-  {id:1, name:'初診後フォロー連絡', who:'受付・佐藤', due:'6/9', status:'todo', over:true,
-   cond:'患者へ電話 or LINEで連絡し、次回予約 or 様子を確認できたら完了', next:'本日中に架電'},
-  {id:2, name:'自費治療の見積り送付', who:'TC・田中', due:'6/10', status:'doing', over:true,
-   cond:'見積りPDFを送付し、検討状況の返信をもらえたら完了', next:'見積り送付'},
-  {id:3, name:'キャンセル枠の再予約案内', who:'受付・佐藤', due:'6/12', status:'todo', over:false,
-   cond:'空き枠を案内し、再予約 or 辞退の意思確認ができたら完了', next:'空き枠を案内'},
-  {id:4, name:'検査結果の説明予約', who:'DH・鈴木', due:'6/11', status:'back', over:false,
-   cond:'説明日を確定し予約登録できたら完了。日程未確定のため差し戻し中', next:'希望日を再確認'},
-  {id:5, name:'3ヶ月リコール案内', who:'受付・佐藤', due:'6/8', status:'done', over:false,
-   cond:'リコール通知を送付済み。返信受領で完了', next:'―'},
+  {id:1, name:'問い合わせの返信フォロー', who:'営業・佐藤', due:'6/9', status:'todo', over:true,
+   cond:'相手へ電話 or メールで連絡し、返信 or 次の予定を確認できたら完了', next:'本日中に連絡'},
+  {id:2, name:'見積りの送付', who:'営業・田中', due:'6/10', status:'doing', over:true,
+   cond:'見積りを送付し、検討状況の返信をもらえたら完了', next:'見積り送付'},
+  {id:3, name:'日程変更の再調整', who:'事務・佐藤', due:'6/12', status:'todo', over:false,
+   cond:'代わりの日程を案内し、再調整 or 辞退の意思確認ができたら完了', next:'候補日を案内'},
+  {id:4, name:'納品後のフォロー確認', who:'現場・鈴木', due:'6/11', status:'back', over:false,
+   cond:'フォロー日を確定し登録できたら完了。日程未確定のため差し戻し中', next:'希望日を再確認'},
+  {id:5, name:'定期点検の案内', who:'事務・佐藤', due:'6/8', status:'done', over:false,
+   cond:'案内を送付済み。返信受領で完了', next:'―'},
 ];
 let logs = [
-  {t:'8:42', name:'3ヶ月リコール案内', status:'done', reason:''},
-  {t:'8:40', name:'検査結果の説明予約', status:'back', reason:'情報待ち'},
+  {t:'8:42', name:'定期点検の案内', status:'done', reason:''},
+  {t:'8:40', name:'納品後のフォロー確認', status:'back', reason:'情報待ち'},
 ];
 const $ = s => document.querySelector(s);
 const order = ['todo','doing','back','done'];
