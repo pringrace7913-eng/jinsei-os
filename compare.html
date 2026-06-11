@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>みらい通帳 ｜ つくり方くらべ（自作 vs Google）</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0a1430">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="みらい通帳">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="favicon-32.png" sizes="32x32">
+<style>
+  :root{--bg:#0a1430;--card:#16264f;--card2:#1d2f5c;--line:#2b3f70;--ink:#f4f7ff;--sub:#9fb1d8;
+    --accent:#ffd34d;--teal:#4dd0c4;--good:#43d18a;--money:#5ec8ff;--warn:#ff9d5b;}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,"Hiragino Kaku Gothic ProN","Noto Sans JP",system-ui,sans-serif;}
+  body{max-width:480px;margin:0 auto;min-height:100vh;padding-bottom:30px;}
+  .flag{background:var(--accent);color:#1a1300;font-weight:800;font-size:10.5px;letter-spacing:.08em;text-align:center;padding:5px;position:sticky;top:0;z-index:50;}
+  header{padding:13px 18px 2px;} .brand{font-size:12.5px;color:var(--sub);} .brand b{color:var(--accent);}
+  .back{display:inline-block;margin:8px 18px 0;font-size:12px;color:var(--sub);text-decoration:none;border:1px solid var(--line);border-radius:9px;padding:5px 11px;}
+  h1{font-size:20px;font-weight:800;margin:12px 18px 4px;line-height:1.3;}
+  .lead{font-size:12.5px;color:var(--sub);line-height:1.55;margin:0 18px;}
+  .lead b{color:var(--accent);}
+  /* two approach cards */
+  .pair{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:14px 16px 4px;}
+  .ap{border-radius:15px;padding:13px 12px;border:1px solid var(--line);background:var(--card);}
+  .ap.self{border-color:#6e5a1f;background:linear-gradient(135deg,#2a2410,#16264f);}
+  .ap.goog{border-color:#2f6b58;background:linear-gradient(135deg,#13351f,#16264f);}
+  .ap .ic{font-size:30px;line-height:1;}
+  .ap .ti{font-size:14px;font-weight:800;margin-top:6px;} .ap.self .ti{color:var(--accent);} .ap.goog .ti{color:var(--good);}
+  .ap .me{font-size:11px;color:var(--sub);margin-top:4px;line-height:1.45;}
+  .ap .use{font-size:10.5px;font-weight:800;margin-top:8px;padding:3px 8px;border-radius:999px;display:inline-block;}
+  .ap.self .use{background:#3a2f12;color:var(--accent);} .ap.goog .use{background:#16402c;color:var(--good);}
+  /* table */
+  .sec{font-size:11px;color:var(--sub);font-weight:700;letter-spacing:.06em;margin:18px 18px 8px;}
+  .cmp{margin:0 16px;border:1px solid var(--line);border-radius:14px;overflow:hidden;}
+  .cmp .hd,.cmp .rw{display:grid;grid-template-columns:1.25fr 1fr 1fr;}
+  .cmp .hd{background:#0e1b3a;font-size:10.5px;font-weight:800;color:var(--sub);}
+  .cmp .hd div{padding:9px 8px;text-align:center;border-bottom:1px solid var(--line);}
+  .cmp .hd .x{text-align:left;}
+  .cmp .hd .s{color:var(--accent);} .cmp .hd .g{color:var(--good);}
+  .cmp .rw{border-bottom:1px solid var(--line);font-size:11px;}
+  .cmp .rw:last-child{border-bottom:none;}
+  .cmp .rw>div{padding:9px 8px;}
+  .cmp .ax{font-weight:700;color:var(--ink);font-size:11.5px;}
+  .cmp .ax small{display:block;color:#6f82b0;font-weight:500;font-size:9.5px;margin-top:1px;}
+  .cmp .cell{text-align:center;border-left:1px solid var(--line);}
+  .cmp .mk{font-size:15px;font-weight:800;}
+  .cmp .mk.cir{color:var(--good);} .cmp .mk.tri{color:var(--warn);}
+  .cmp .cell small{display:block;color:var(--sub);font-size:9px;font-weight:500;margin-top:2px;line-height:1.3;}
+  .cmp .cell.s{background:#1a1605;} .cmp .cell.g{background:#0d2417;}
+  .verdict{margin:16px 16px 4px;background:linear-gradient(135deg,#16402c,#173a6b);border:1px solid #2f6b58;border-radius:15px;padding:14px 15px;}
+  .verdict .big{font-size:16px;font-weight:800;color:var(--good);line-height:1.4;}
+  .verdict .small{font-size:12px;color:#dce6ff;margin-top:7px;line-height:1.6;}
+  .verdict .small b{color:var(--accent);}
+  .map{margin:14px 16px 2px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px 14px;}
+  .map h3{font-size:12.5px;margin:0 0 9px;color:var(--teal);font-weight:800;}
+  .map .row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid #22345f;font-size:12px;}
+  .map .row:last-child{border-bottom:none;}
+  .map .row .k{color:var(--sub);} .map .row .a{color:var(--ink);font-weight:700;text-align:right;}
+  .map .row .a b{color:var(--good);}
+  .note{font-size:10.5px;color:#6f82b0;line-height:1.55;margin:12px 18px 0;}
+</style>
+</head>
+<body>
+<div class="flag">DEMO ・ つくり手向けの比較（自社の方針説明用・仮データ）</div>
+<header><div class="brand">株式会社くらし君 ／ <b>みらい通帳</b>・つくり方くらべ</div></header>
+<a class="back" href="index.html">‹ ホームに戻る</a>
+<h1>アプリは「自作」？それとも「Google」？</h1>
+<div class="lead">同じ「お金の見える化」を、2つのつくり方で比べます。結論はシンプル＝<b>見せるのは自作、回すのはGoogle</b>。どちらが上ではなく、<b>用途が違う</b>だけ。</div>
+
+<div class="pair">
+  <div class="ap self">
+    <div class="ic">🏎️</div>
+    <div class="ti">自作アプリ</div>
+    <div class="me">一点物の高級外車。速くて派手・自由自在。整備は専門店（自社）頼み。</div>
+    <span class="use">見せる用（営業デモ）</span>
+  </div>
+  <div class="ap goog">
+    <div class="ic">🏗️</div>
+    <div class="ti">Google既存</div>
+    <div class="me">どこでも直せるインフラ。地味でも確実・誰でも回せる。御社がそのまま所有。</div>
+    <span class="use">回す用（本番運用）</span>
+  </div>
+</div>
+
+<div class="sec">▶ 7つのものさしで比べる</div>
+<div class="cmp">
+  <div class="hd"><div class="x">ものさし</div><div class="s">自作</div><div class="g">Google</div></div>
+  <div class="rw"><div class="ax">導入の早さ<small>形にするまで</small></div><div class="cell s"><span class="mk cir">◎</span><small>すぐ作れる</small></div><div class="cell g"><span class="mk cir">○</span><small>設定で早い</small></div></div>
+  <div class="rw"><div class="ax">端末を選ばない<small>普遍性</small></div><div class="cell s"><span class="mk tri">○</span><small>作り込み次第</small></div><div class="cell g"><span class="mk cir">◎</span><small>どの端末でも・ゼロ導入</small></div></div>
+  <div class="rw"><div class="ax">直しやすさ<small>保守</small></div><div class="cell s"><span class="mk tri">△</span><small>作った人頼み</small></div><div class="cell g"><span class="mk cir">◎</span><small>誰でも直せる</small></div></div>
+  <div class="rw"><div class="ax">権限・記録<small>証跡・統制</small></div><div class="cell s"><span class="mk tri">△</span><small>自前で用意</small></div><div class="cell g"><span class="mk cir">◎</span><small>Workspace権限・履歴</small></div></div>
+  <div class="rw"><div class="ax">費用<small>初期・維持</small></div><div class="cell s"><span class="mk tri">△</span><small>開発工数がかかる</small></div><div class="cell g"><span class="mk cir">◎</span><small>既存ライセンス内</small></div></div>
+  <div class="rw"><div class="ax">見た目の自由<small>カスタム性</small></div><div class="cell s"><span class="mk cir">◎</span><small>思いのまま</small></div><div class="cell g"><span class="mk tri">○</span><small>範囲内で十分</small></div></div>
+  <div class="rw"><div class="ax">本番運用向き<small>毎日まわす</small></div><div class="cell s"><span class="mk tri">△</span><small>見せる用</small></div><div class="cell g"><span class="mk cir">◎</span><small>回す用</small></div></div>
+</div>
+<div class="note">◎=得意／○=十分／△=苦手。「△」は欠点ではなく“その用途ではない”という意味です。Google版は手抜きではなく、<b>御社の既存資産（Sheets / Looker）を活かす</b>のが本当のDXです。</div>
+
+<div class="verdict">
+  <div class="big">見せるは自作。回すはGoogle。</div>
+  <div class="small">アプリを増やすのではなく、<b>業務を繋ぐ</b>。営業やデモは自作で派手に掴み、毎日の運用は<b>御社のGoogleにそのまま</b>＝乗り換え不要・御社が所有・どの端末でも動く。これがPringraceの「AI統制インフラ」の考え方です。</div>
+</div>
+
+<div class="sec">▶ この「みらい通帳」を本番化するなら</div>
+<div class="map">
+  <h3>同じ機能を、御社のGoogleで</h3>
+  <div class="row"><span class="k">達成見込みダッシュボード</span><span class="a">→ <b>Looker Studio</b></span></div>
+  <div class="row"><span class="k">入力・今月やること</span><span class="a">→ <b>AppSheet</b>（Google純正ノーコード）</span></div>
+  <div class="row"><span class="k">データの置き場</span><span class="a">→ <b>スプレッドシート</b></span></div>
+  <div class="row"><span class="k">自動化・集計</span><span class="a">→ <b>GAS</b>（裏方）</span></div>
+  <div class="row"><span class="k">通知・連絡</span><span class="a">→ <b>Gmail / Chat</b></span></div>
+</div>
+<div class="note">※本画面は自社の作り方ポリシー説明用のデモです（仮データ）。実際の構成は要件で変わります。自作HTMLは「見せる・体験する」段階まで、毎日まわす本番は車輪の再発明をせずGoogle既存＋GASに寄せる、が方針です。</div>
+
+<script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}</script>
+</body>
+</html>

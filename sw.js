@@ -1,11 +1,12 @@
 /* 人生OS PWA service worker — オフライン対応（1回読めば電波が切れても開ける） */
-const CACHE = 'jinsei-os-v8';
+const CACHE = 'jinsei-os-v9';
 const SHELL = [
   './',
   './index.html',
   './jinsei-os-kdi.html',
   './jinsei-os-roadmap.html',
   './sagyo-os-kdi.html',
+  './compare.html',
   './manifest.webmanifest',
   './icon-192.png',
   './icon-512.png',
