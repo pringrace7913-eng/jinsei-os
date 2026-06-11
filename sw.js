@@ -1,5 +1,5 @@
 /* 人生OS PWA service worker — オフライン対応（1回読めば電波が切れても開ける） */
-const CACHE = 'jinsei-os-v1';
+const CACHE = 'jinsei-os-v2';
 const SHELL = [
   './',
   './index.html',
