@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>くらし君 作業OS ｜ 3ペルソナ・後追い管理デモ</title>
+<style>
+  :root{
+    --navy:#0e1b3a; --navy2:#16264f; --card:#1d2f5c; --line:#2c4275;
+    --ink:#f4f7ff; --sub:#9fb1d8; --accent:#ffd34d; --accent2:#4dd0c4;
+    --good:#43d18a; --warn:#ff8a5b; --bad:#ff6b81; --hold:#b794ff;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0; padding:0; background:var(--navy); color:var(--ink);
+    font-family:-apple-system,"Hiragino Kaku Gothic ProN","Noto Sans JP",system-ui,sans-serif;}
+  body{max-width:480px; margin:0 auto; min-height:100vh;}
+  body.has-nav{padding-bottom:78px;}
+  .demo-flag{background:var(--accent); color:#1a1300; font-weight:800; font-size:11px;
+    letter-spacing:.12em; text-align:center; padding:5px; position:sticky; top:0; z-index:50;}
+  header{padding:14px 20px 6px;}
+  .brand{font-size:13px; color:var(--sub); letter-spacing:.04em;}
+  .brand b{color:var(--accent);}
+
+  /* persona switch */
+  .persona{display:grid; grid-template-columns:repeat(3,1fr); gap:6px; background:#0a1430;
+    border:1px solid var(--line); border-radius:14px; padding:5px; margin:12px 16px 4px;}
+  .persona button{background:none; border:none; color:var(--sub); font-size:12.5px; font-weight:700;
+    padding:11px 4px; border-radius:10px; cursor:pointer; line-height:1.3;}
+  .persona button small{display:block; font-size:9.5px; font-weight:500; color:#6f82b0; margin-top:2px;}
+  .persona button.on{background:var(--accent); color:#1a1300;}
+  .persona button.on small{color:#5a4500;}
+
+  h1{font-size:21px; margin:8px 0 2px 20px; font-weight:800;}
+  .lead{font-size:12.5px; color:var(--sub); line-height:1.5; margin:0 20px;}
+
+  .view{display:none;} .view.on{display:block;}
+  .screen{display:none; padding:6px 16px 16px; animation:fade .25s ease;}
+  .screen.on{display:block;}
+  .page{padding:6px 16px 28px; animation:fade .25s ease;}
+  @keyframes fade{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;}}
+  .scr-title{font-size:16px; font-weight:800; margin:16px 4px 10px; display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;}
+  .scr-title small{font-size:11px; color:var(--sub); font-weight:500;}
+
+  .kpis{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:6px;}
+  .kpi{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:12px 8px; text-align:center;}
+  .kpi .n{font-size:24px; font-weight:800; line-height:1;}
+  .kpi .l{font-size:10.5px; color:var(--sub); margin-top:5px;}
+  .kpi.bad .n{color:var(--bad);} .kpi.warn .n{color:var(--warn);} .kpi.hold .n{color:var(--hold);}
+  .kpi.good .n{color:var(--good);} .kpi.acc .n{color:var(--accent);}
+
+  .card{background:var(--card); border:1px solid var(--line); border-radius:16px; padding:13px 14px; margin-bottom:10px;}
+  .card .top{display:flex; justify-content:space-between; align-items:flex-start; gap:8px;}
+  .card .name{font-size:15px; font-weight:700; line-height:1.35;}
+  .badge{font-size:10.5px; font-weight:700; padding:4px 9px; border-radius:999px; white-space:nowrap;}
+  .b-todo{background:#26345c; color:#cdd9ff;} .b-doing{background:#143b52; color:#9fe7ff;}
+  .b-done{background:#16402c; color:#86f0b6;} .b-back{background:#2e2350; color:#d3bcff;}
+  .meta{display:flex; gap:14px; margin-top:9px; font-size:11.5px; color:var(--sub); flex-wrap:wrap;}
+  .meta b{color:var(--ink); font-weight:600;}
+  .done-cond{margin-top:9px; font-size:11.5px; color:var(--sub); background:#13224a; border-radius:10px; padding:8px 10px;}
+  .done-cond b{color:var(--accent2);}
+  .over-tag{color:var(--bad); font-weight:700;}
+
+  label{display:block; font-size:12px; color:var(--sub); margin:13px 2px 6px; font-weight:600;}
+  select,input,textarea{width:100%; background:var(--navy2); color:var(--ink); border:1px solid var(--line);
+    border-radius:12px; padding:13px; font-size:15px; font-family:inherit;}
+  .btn{width:100%; background:var(--accent); color:#1a1300; border:none; border-radius:14px;
+    padding:15px; font-size:16px; font-weight:800; margin-top:18px; cursor:pointer;}
+  .btn:active{transform:scale(.98);}
+  .btn.ghost{background:none; color:var(--accent); border:1.5px solid var(--accent);}
+  .timer{font-size:11px; color:var(--accent2); text-align:center; margin-top:10px;}
+  .flash{background:var(--good); color:#062012; font-weight:800; text-align:center; padding:12px;
+    border-radius:12px; margin-top:14px; font-size:13.5px; display:none;}
+
+  .logrow{display:flex; gap:10px; padding:11px 2px; border-bottom:1px solid var(--line); font-size:12.5px;}
+  .logrow .t{color:var(--sub); min-width:42px; font-variant-numeric:tabular-nums;}
+  .logrow .d{flex:1;} .logrow .d b{font-weight:700;}
+
+  .bar{display:flex; align-items:center; gap:10px; margin:9px 0; font-size:12.5px;}
+  .bar .lab{min-width:86px; color:var(--sub);}
+  .bar .track{flex:1; background:#091026; border:1px solid #1c2c55; border-radius:9px; height:18px; overflow:hidden;}
+  .bar .fill{display:block; height:100%; border-radius:9px; min-width:6px; transition:width .5s ease;}
+  .bar .v{min-width:24px; text-align:right; font-weight:700;}
+  .insight{background:#13224a; border-left:3px solid var(--accent); border-radius:10px; padding:12px 14px;
+    font-size:12.5px; line-height:1.6; color:#dce6ff; margin-top:14px;}
+  .insight b{color:var(--accent);}
+
+  /* before/after */
+  .ba{display:grid; grid-template-columns:1fr auto 1fr; gap:8px; align-items:center; margin:8px 0;}
+  .ba .box{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:10px; text-align:center;}
+  .ba .box .n{font-size:19px; font-weight:800;} .ba .box.b4 .n{color:var(--bad);} .ba .box.af .n{color:var(--good);}
+  .ba .box .c{font-size:10px; color:var(--sub); margin-top:3px;}
+  .ba .arrow{color:var(--accent); font-weight:800; font-size:18px;}
+  .ba-cap{font-size:11.5px; color:var(--sub); margin:2px 2px 12px;}
+  .roi{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin:6px 0;}
+  .roi .c{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:13px 8px; text-align:center;}
+  .roi .c .n{font-size:19px; font-weight:800; color:var(--accent2);} .roi .c .l{font-size:10px; color:var(--sub); margin-top:4px;}
+  .meter{height:26px; background:#091026; border:1px solid #1c2c55; border-radius:13px; overflow:hidden; margin:8px 0 4px;}
+  .meter .f{height:100%; background:linear-gradient(90deg,#ff8a5b,#ff6b81); display:flex; align-items:center; justify-content:flex-end; padding-right:10px; font-size:11px; font-weight:800; color:#3a0010;}
+  .check{font-size:13px; color:#dce6ff; padding:8px 2px; border-bottom:1px solid var(--line); display:flex; gap:9px; align-items:flex-start;}
+  .check .mk{color:var(--good); font-weight:800;}
+
+  nav{position:fixed; bottom:0; left:50%; transform:translateX(-50%); width:100%; max-width:480px;
+    background:#0a1430; border-top:1px solid var(--line); display:none; grid-template-columns:repeat(4,1fr);
+    padding:8px 0 calc(8px + env(safe-area-inset-bottom)); z-index:40;}
+  nav.show{display:grid;}
+  nav button{background:none; border:none; color:var(--sub); font-size:10.5px; font-weight:600;
+    display:flex; flex-direction:column; align-items:center; gap:3px; padding:4px; cursor:pointer;}
+  nav button .ic{font-size:19px;} nav button.on{color:var(--accent);}
+</style>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0a1430">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="人生OS">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="favicon-32.png" sizes="32x32">
+<script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}</script>
+</head>
+<body class="has-nav">
+<div class="demo-flag">DEMO ・ SAMPLE ・ FICTIONAL（架空データ）</div>
+
+<header>
+  <div class="brand">株式会社くらし君 ／ <b>作業OS</b>・後追い管理</div>
+</header>
+<div class="persona">
+  <button class="on" data-p="worker">作業層<small>現場が迷わない</small></button>
+  <button data-p="manager">管理者層<small>滞留が見える</small></button>
+  <button data-p="exec">経営層<small>属人化を解く</small></button>
+</div>
+<h1 id="hd-title">今日見る画面</h1>
+<div class="lead" id="hd-lead">朝30秒。未対応・期限超過・差し戻しだけ見れば、今日やる3件が分かります。</div>
+
+<!-- ===== 作業層 ===== -->
+<div class="view on" id="v-worker">
+  <section class="screen on" id="s-today">
+    <div class="kpis">
+      <div class="kpi bad"><div class="n" id="k-over">2</div><div class="l">期限超過</div></div>
+      <div class="kpi warn"><div class="n" id="k-todo">2</div><div class="l">未対応</div></div>
+      <div class="kpi hold"><div class="n" id="k-back">1</div><div class="l">差し戻し</div></div>
+    </div>
+    <div class="scr-title">今日やる3件 <small>優先順に自動表示</small></div>
+    <div id="today-list"></div>
+  </section>
+  <section class="screen" id="s-input">
+    <div class="scr-title">30秒入力 <small>触るのはプルダウンだけ</small></div>
+    <label>どの後追い？</label>
+    <select id="in-task"></select>
+    <label>いまの状態は？</label>
+    <select id="in-status">
+      <option>対応した（完了）</option><option>進行中</option>
+      <option>差し戻し（やり直し）</option><option>まだ未対応</option>
+    </select>
+    <label>詰まった理由（任意・1タップ）</label>
+    <select id="in-reason">
+      <option value="">―</option><option>患者さんと連絡つかず</option>
+      <option>担当者が不在</option><option>情報待ち</option><option>時間がなかった</option>
+    </select>
+    <button class="btn" id="submit">この内容で記録する</button>
+    <div class="timer">⏱ 想定操作時間：約30秒（3タップ）</div>
+    <div class="flash" id="flash">✓ 記録しました。ダッシュボードに反映済みです。</div>
+  </section>
+  <section class="screen" id="s-log">
+    <div class="scr-title">記録ログ <small>誰が・いつ・何をしたかの証跡</small></div>
+    <div id="log-list"></div>
+  </section>
+  <section class="screen" id="s-dash">
+    <div class="scr-title">ダッシュボード <small>状態別・自動集計</small></div>
+    <div id="dash-bars"></div>
+    <div class="insight" id="dash-insight"></div>
+  </section>
+</div>
+
+<!-- ===== 管理者層 ===== -->
+<div class="view" id="v-manager">
+  <div class="page">
+    <div class="kpis">
+      <div class="kpi bad"><div class="n" id="m-over">2</div><div class="l">期限超過</div></div>
+      <div class="kpi warn"><div class="n" id="m-stuck">4</div><div class="l">滞留中</div></div>
+      <div class="kpi acc"><div class="n">2.4</div><div class="l">平均滞留(日)</div></div>
+    </div>
+    <div class="scr-title">誰が止めているか <small>担当別の負荷</small></div>
+    <div id="m-load"></div>
+    <div class="scr-title">いま滞留している後追い <small>期限超過が先頭</small></div>
+    <div id="m-stuck-list"></div>
+    <div class="insight">
+      <b>確認の声かけ：週47回 → 週12回</b>（見える化の前後・架空）。「あれどうなった？」を管理者が毎回聞かなくても、この画面で滞留と担当が一目で分かります。
+    </div>
+  </div>
+</div>
+
+<!-- ===== 経営層 ===== -->
+<div class="view" id="v-exec">
+  <div class="page">
+    <div class="scr-title">属人化リスク <small>後追いが特定の人に集中</small></div>
+    <div class="meter"><div class="f" style="width:60%">受付・佐藤 60%</div></div>
+    <div class="ba-cap">後追いの6割が1人に集中。その人が休むと止まる＝事業の単一障害点。</div>
+
+    <div class="scr-title">30日テストで変わること <small>Before → After（架空）</small></div>
+    <div class="ba">
+      <div class="box b4"><div class="n">11件</div><div class="c">放置の後追い</div></div>
+      <div class="arrow">→</div>
+      <div class="box af"><div class="n">0件</div><div class="c">朝30秒で可視化</div></div>
+    </div>
+    <div class="ba">
+      <div class="box b4"><div class="n">頭の中</div><div class="c">引き継ぎ不可</div></div>
+      <div class="arrow">→</div>
+      <div class="box af"><div class="n">完了条件</div><div class="c">誰でも引き継げる</div></div>
+    </div>
+
+    <div class="scr-title">承継できる状態になる</div>
+    <div class="check"><span class="mk">✓</span><span>各業務に「完了条件」が言語化される → 担当が代わっても同じ品質で回る</span></div>
+    <div class="check"><span class="mk">✓</span><span>ログが証跡として残る → 院長が見なくても、見たい時に確認できる</span></div>
+    <div class="check"><span class="mk">✓</span><span>属人化が解け、採用・退職・休職のリスクが下がる</span></div>
+
+    <div class="scr-title">投資対効果（仮説）</div>
+    <div class="roi">
+      <div class="c"><div class="n">月1,800円</div><div class="l">追加ライセンス</div></div>
+      <div class="c"><div class="n">月5–10h</div><div class="l">確認工数の削減</div></div>
+      <div class="c"><div class="n">15–25倍</div><div class="l">ROI仮説</div></div>
+    </div>
+
+    <div class="insight">
+      <b>買う理由：</b>増えるのは画面1つ。やることは増やさず、止まっている仕事と属人化が見えるようになる。まず1業務だけ、30日、架空またはマスクデータ、外部共有なしで試せます。
+    </div>
+    <button class="btn" id="cta">30日テストを1業務だけ試す</button>
+    <button class="btn ghost" id="cta2" style="margin-top:10px">作業層デモをもう一度見る</button>
+    <div class="flash" id="flash2" style="margin-top:14px">✓ これはデモです。実際の申込・契約・送信は行いません（Red＝本番化時に確認）。</div>
+  </div>
+</div>
+
+<nav class="show" id="nav">
+  <button class="on" data-s="today" data-t="今日見る画面" data-l="朝30秒。未対応・期限超過・差し戻しだけ見れば、今日やる3件が分かります。"><span class="ic">📋</span>今日</button>
+  <button data-s="input" data-t="30秒入力" data-l="表を触らず、プルダウン3タップで作業の状態を記録します。"><span class="ic">⚡</span>入力</button>
+  <button data-s="log" data-t="記録ログ" data-l="入力は1件1行で積み上がり、後から証跡として確認できます。"><span class="ic">🧾</span>ログ</button>
+  <button data-s="dash" data-t="ダッシュボード" data-l="入力した瞬間に、状態別の件数が自動で集計されます。"><span class="ic">📊</span>ダッシュ</button>
+</nav>
+
+<script>
+const STATUS = {
+  todo:{label:'未対応', cls:'b-todo', color:'#7d94e8'},
+  doing:{label:'進行中', cls:'b-doing', color:'#4dd0c4'},
+  done:{label:'完了', cls:'b-done', color:'#43d18a'},
+  back:{label:'差し戻し', cls:'b-back', color:'#b794ff'},
+};
+let tasks = [
+  {id:1, name:'初診後フォロー連絡', who:'受付・佐藤', due:'6/9', status:'todo', over:true,
+   cond:'患者へ電話 or LINEで連絡し、次回予約 or 様子を確認できたら完了', next:'本日中に架電'},
+  {id:2, name:'自費治療の見積り送付', who:'TC・田中', due:'6/10', status:'doing', over:true,
+   cond:'見積りPDFを送付し、検討状況の返信をもらえたら完了', next:'見積り送付'},
+  {id:3, name:'キャンセル枠の再予約案内', who:'受付・佐藤', due:'6/12', status:'todo', over:false,
+   cond:'空き枠を案内し、再予約 or 辞退の意思確認ができたら完了', next:'空き枠を案内'},
+  {id:4, name:'検査結果の説明予約', who:'DH・鈴木', due:'6/11', status:'back', over:false,
+   cond:'説明日を確定し予約登録できたら完了。日程未確定のため差し戻し中', next:'希望日を再確認'},
+  {id:5, name:'3ヶ月リコール案内', who:'受付・佐藤', due:'6/8', status:'done', over:false,
+   cond:'リコール通知を送付済み。返信受領で完了', next:'―'},
+];
+let logs = [
+  {t:'8:42', name:'3ヶ月リコール案内', status:'done', reason:''},
+  {t:'8:40', name:'検査結果の説明予約', status:'back', reason:'情報待ち'},
+];
+const $ = s => document.querySelector(s);
+const order = ['todo','doing','back','done'];
+
+function renderToday(){
+  const prio = tasks.filter(t=>t.status!=='done')
+    .sort((a,b)=>(b.over-a.over)||(order.indexOf(a.status)-order.indexOf(b.status))).slice(0,3);
+  $('#today-list').innerHTML = prio.map(t=>{const st=STATUS[t.status];
+    return `<div class="card"><div class="top"><div class="name">${t.name}</div>
+      <span class="badge ${st.cls}">${st.label}</span></div>
+      <div class="meta"><span>担当 <b>${t.who}</b></span>
+      <span>期限 <b class="${t.over?'over-tag':''}">${t.due}${t.over?' ⚠超過':''}</b></span>
+      <span>次 <b>${t.next}</b></span></div>
+      <div class="done-cond"><b>完了条件：</b>${t.cond}</div></div>`;}).join('');
+  $('#k-over').textContent = tasks.filter(t=>t.over&&t.status!=='done').length;
+  $('#k-todo').textContent = tasks.filter(t=>t.status==='todo').length;
+  $('#k-back').textContent = tasks.filter(t=>t.status==='back').length;
+}
+function renderInput(){ $('#in-task').innerHTML = tasks.map(t=>`<option value="${t.id}">${t.name}</option>`).join(''); }
+function renderLog(){ $('#log-list').innerHTML = logs.map(l=>{const st=STATUS[l.status];
+  return `<div class="logrow"><span class="t">${l.t}</span>
+    <span class="d"><b>${l.name}</b>${l.reason?` ・<span style="color:#ff8a5b">${l.reason}</span>`:''}</span>
+    <span class="badge ${st.cls}">${st.label}</span></div>`;}).join(''); }
+function renderDash(){
+  const c={todo:0,doing:0,done:0,back:0}; tasks.forEach(t=>c[t.status]++); const total=tasks.length;
+  $('#dash-bars').innerHTML = order.map(k=>{const st=STATUS[k]; const v=c[k]; const pct=Math.round(v/total*100);
+    return `<div class="bar"><span class="lab">${st.label}</span>
+      <span class="track"><span class="fill" style="width:${pct}%;background:${st.color};box-shadow:0 0 10px ${st.color}99"></span></span>
+      <span class="v">${v}</span></div>`;}).join('');
+  const over=tasks.filter(t=>t.over&&t.status!=='done').length;
+  $('#dash-insight').innerHTML = over>0
+    ? `<b>要注意：</b>期限超過が <b>${over}件</b>。属人化していると「誰が止めているか」が見えませんが、この画面なら朝30秒で分かります。`
+    : `<b>良好：</b>期限超過はゼロ。後追いが滞留せず回っています。`;
+}
+function renderManager(){
+  const open = tasks.filter(t=>t.status!=='done');
+  $('#m-over').textContent = tasks.filter(t=>t.over&&t.status!=='done').length;
+  $('#m-stuck').textContent = open.length;
+  // 担当別負荷
+  const byWho={}; open.forEach(t=>byWho[t.who]=(byWho[t.who]||0)+1);
+  const max=Math.max(1,...Object.values(byWho));
+  $('#m-load').innerHTML = Object.entries(byWho).sort((a,b)=>b[1]-a[1]).map(([w,n])=>{
+    const pct=Math.round(n/max*100); const hot=n>=3;
+    return `<div class="bar"><span class="lab">${w}</span>
+      <span class="track"><span class="fill" style="width:${pct}%;background:${hot?'#ff6b81':'#7d94e8'};box-shadow:0 0 10px ${hot?'#ff6b8199':'#7d94e899'}"></span></span>
+      <span class="v">${n}</span></div>`;}).join('');
+  // 滞留リスト
+  $('#m-stuck-list').innerHTML = open.sort((a,b)=>(b.over-a.over)||(order.indexOf(a.status)-order.indexOf(b.status))).map(t=>{
+    const st=STATUS[t.status];
+    return `<div class="card"><div class="top"><div class="name" style="font-size:14px">${t.name}</div>
+      <span class="badge ${st.cls}">${st.label}</span></div>
+      <div class="meta"><span>担当 <b>${t.who}</b></span>
+      <span>期限 <b class="${t.over?'over-tag':''}">${t.due}${t.over?' ⚠超過':''}</b></span></div></div>`;}).join('');
+}
+function renderAll(){ renderToday(); renderInput(); renderLog(); renderDash(); renderManager(); }
+
+const statusMap={'対応した（完了）':'done','進行中':'doing','差し戻し（やり直し）':'back','まだ未対応':'todo'};
+$('#submit').addEventListener('click',()=>{
+  const t=tasks.find(x=>x.id===+$('#in-task').value);
+  const ns=statusMap[$('#in-status').value]; const reason=$('#in-reason').value;
+  t.status=ns; if(ns==='done')t.over=false;
+  const hh=(8+logs.length%3), mm=(45+logs.length*2)%60;
+  logs.unshift({t:`${hh}:${String(mm).padStart(2,'0')}`,name:t.name,status:ns,reason});
+  renderAll(); const f=$('#flash'); f.style.display='block'; setTimeout(()=>f.style.display='none',2200);
+});
+
+// worker sub-nav
+document.querySelectorAll('#nav button').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('#nav button').forEach(x=>x.classList.remove('on')); b.classList.add('on');
+    document.querySelectorAll('#v-worker .screen').forEach(s=>s.classList.remove('on'));
+    $('#s-'+b.dataset.s).classList.add('on');
+    $('#hd-title').textContent=b.dataset.t; $('#hd-lead').textContent=b.dataset.l; window.scrollTo(0,0);
+  });
+});
+
+// persona switch
+const personaMeta={
+  worker:{t:'今日見る画面', l:'朝30秒。未対応・期限超過・差し戻しだけ見れば、今日やる3件が分かります。'},
+  manager:{t:'管理者の画面', l:'誰の後追いが、どれだけ滞留しているか。聞いて回らなくても一目で分かります。'},
+  exec:{t:'経営者の画面', l:'属人化を解き、引き継げる状態にする。30日テストで何が変わるかを示します。'},
+};
+function switchPersona(p){
+  document.querySelectorAll('.persona button').forEach(x=>x.classList.toggle('on',x.dataset.p===p));
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('on'));
+  $('#v-'+p).classList.add('on');
+  const nav=$('#nav'); const body=document.body;
+  if(p==='worker'){ nav.classList.add('show'); body.classList.add('has-nav'); }
+  else { nav.classList.remove('show'); body.classList.remove('has-nav'); }
+  $('#hd-title').textContent=personaMeta[p].t; $('#hd-lead').textContent=personaMeta[p].l;
+  window.scrollTo(0,0);
+}
+document.querySelectorAll('.persona button').forEach(b=>b.addEventListener('click',()=>switchPersona(b.dataset.p)));
+$('#cta').addEventListener('click',()=>{const f=$('#flash2'); f.style.display='block'; setTimeout(()=>f.style.display='none',2600);});
+$('#cta2').addEventListener('click',()=>switchPersona('worker'));
+
+renderAll();
+</script>
+</body>
+</html>

@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>くらし君 人生OS ｜ 老後資金ロードマップ（平均データ・男女別）</title>
+<style>
+  :root{--navy:#0e1b3a;--navy2:#16264f;--card:#1d2f5c;--line:#2c4275;--ink:#f4f7ff;--sub:#9fb1d8;
+    --accent:#ffd34d;--accent2:#4dd0c4;--good:#43d18a;--warn:#ff8a5b;--bad:#ff6b81;--money:#5ec8ff;--pink:#ff9ec4;}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;background:var(--navy);color:var(--ink);
+    font-family:-apple-system,"Hiragino Kaku Gothic ProN","Noto Sans JP",system-ui,sans-serif;}
+  body{max-width:480px;margin:0 auto;min-height:100vh;padding-bottom:80px;}
+  .demo-flag{background:var(--accent);color:#1a1300;font-weight:800;font-size:10.5px;letter-spacing:.08em;
+    text-align:center;padding:5px;position:sticky;top:0;z-index:50;}
+  header{padding:13px 18px 4px;} .brand{font-size:12.5px;color:var(--sub);} .brand b{color:var(--accent);}
+  /* gender switch */
+  .gsw{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;background:#0a1430;border:1px solid var(--line);
+    border-radius:14px;padding:5px;margin:10px 14px 2px;}
+  .gsw button{background:none;border:none;color:var(--sub);font-size:10.5px;font-weight:700;padding:9px 1px;border-radius:9px;cursor:pointer;line-height:1.25;}
+  .gsw button small{display:block;font-size:8px;font-weight:500;color:#6f82b0;margin-top:2px;}
+  .gsw button.on{background:var(--accent);color:#1a1300;} .gsw button.on small{color:#5a4500;}
+  h1{font-size:20px;margin:10px 0 2px 18px;font-weight:800;}
+  .lead{font-size:12px;color:var(--sub);line-height:1.5;margin:0 18px;}
+  .screen{display:none;padding:6px 16px 16px;animation:fade .25s ease;} .screen.on{display:block;}
+  @keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+  .scr-title{font-size:15px;font-weight:800;margin:16px 4px 10px;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;}
+  .scr-title small{font-size:11px;color:var(--sub);font-weight:500;}
+  .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 4px;text-align:center;}
+  .kpi .n{font-size:18px;font-weight:800;line-height:1.05;} .kpi .l{font-size:9.5px;color:var(--sub);margin-top:5px;}
+  .kpi.money .n{color:var(--money);} .kpi.good .n{color:var(--good);} .kpi.acc .n{color:var(--accent);}
+  .pchip{display:flex;gap:11px;align-items:center;background:linear-gradient(135deg,#1d2f5c,#223a72);
+    border:1px solid var(--line);border-radius:14px;padding:11px 13px;margin:6px 0 4px;}
+  .pchip .av{flex:0 0 auto;width:42px;height:42px;border-radius:50%;background:#28407a;display:flex;align-items:center;justify-content:center;font-size:22px;}
+  .pchip .pn{font-size:14px;font-weight:800;} .pchip .pd{font-size:11px;color:var(--sub);margin-top:2px;line-height:1.4;} .pchip .pd b{color:var(--accent2);}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:13px 14px;margin-bottom:10px;}
+  .card h3{font-size:12.5px;margin:0 0 7px;color:var(--accent2);font-weight:700;}
+  .card p{margin:0;font-size:12.5px;line-height:1.6;color:#e4ebff;}
+  .li{font-size:12.5px;line-height:1.55;color:#e4ebff;padding:5px 0;display:flex;gap:8px;}
+  .li .mk{color:var(--accent);font-weight:800;flex:0 0 auto;} .li b{color:#fff;}
+  .bar{display:flex;align-items:center;gap:10px;margin:8px 0;font-size:12px;}
+  .bar .lab{min-width:72px;color:var(--sub);}
+  .bar .track{flex:1;background:#091026;border:1px solid #1c2c55;border-radius:9px;height:18px;overflow:hidden;}
+  .bar .fill{display:block;height:100%;border-radius:9px;min-width:6px;transition:width .5s ease;}
+  .bar .v{min-width:62px;text-align:right;font-weight:700;font-variant-numeric:tabular-nums;}
+  /* structure diagram */
+  .struct{margin:4px 0 2px;}
+  .struct .gross{font-size:12px;color:var(--sub);margin-bottom:7px;} .struct .gross b{color:var(--money);font-size:15px;}
+  .stk{display:flex;height:32px;border-radius:9px;overflow:hidden;border:1px solid #1c2c55;}
+  .stk .seg{display:flex;align-items:center;justify-content:center;font-size:9.5px;font-weight:800;color:#04130a;min-width:2px;overflow:hidden;white-space:nowrap;}
+  .stk-leg{display:flex;flex-wrap:wrap;gap:12px;margin-top:9px;font-size:11px;}
+  .stk-leg .it{display:flex;align-items:center;gap:5px;color:var(--sub);} .stk-leg .sw{width:10px;height:10px;border-radius:3px;}
+  .tree{margin-top:14px;}
+  .tree .node{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:9px 12px;display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-size:12.5px;}
+  .tree .node .k{font-weight:700;} .tree .node .v{font-weight:800;font-variant-numeric:tabular-nums;}
+  .tree .child{margin-left:16px;border-left:2px solid #23345f;padding-left:12px;}
+  .tree .t-gross{border-color:var(--money);} .tree .t-gross .v{color:var(--money);}
+  .tree .t-tax .v{color:var(--bad);}
+  .tree .t-take{border-color:var(--accent2);} .tree .t-take .v{color:var(--accent2);}
+  .tree .t-life .v{color:var(--money);}
+  .tree .t-save{border-color:var(--good);} .tree .t-save .v{color:var(--good);}
+  .goalbox{background:linear-gradient(135deg,#16402c,#1d2f5c);border:1px solid var(--good);border-radius:16px;padding:16px;text-align:center;margin-bottom:10px;}
+  .goalbox .big{font-size:34px;font-weight:800;color:var(--good);line-height:1;} .goalbox .cap{font-size:11.5px;color:var(--sub);margin-top:6px;}
+  .prog{height:22px;background:#091026;border:1px solid #1c2c55;border-radius:11px;overflow:hidden;margin:10px 0 4px;}
+  .prog .f{height:100%;background:linear-gradient(90deg,#43d18a,#4dd0c4);display:flex;align-items:center;justify-content:flex-end;padding-right:9px;font-size:10.5px;font-weight:800;color:#04201d;}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0;}
+  .two .c{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 8px;text-align:center;}
+  .two .c .n{font-size:18px;font-weight:800;} .two .c .l{font-size:10px;color:var(--sub);margin-top:4px;}
+  .two .c.cash .n{color:var(--warn);} .two .c.inv .n{color:var(--good);}
+  .insight{background:#13224a;border-left:3px solid var(--accent);border-radius:10px;padding:12px 14px;font-size:12px;line-height:1.6;color:#dce6ff;margin-top:12px;} .insight b{color:var(--accent);}
+  .flow .f{display:flex;gap:10px;align-items:flex-start;}
+  .flow .f .age{flex:0 0 auto;width:42px;text-align:right;font-size:12px;font-weight:800;color:var(--accent);padding-top:1px;}
+  .flow .f .ln{flex:1;padding-bottom:13px;border-left:2px solid #23345f;padding-left:14px;position:relative;}
+  .flow .f .ln::before{content:'';position:absolute;left:-5px;top:3px;width:8px;height:8px;border-radius:50%;background:var(--accent);}
+  .flow .f:last-child .ln{border-left:2px solid transparent;}
+  .flow .f .ft{font-size:13px;font-weight:700;} .flow .f .fd{font-size:11.5px;color:var(--sub);margin-top:2px;line-height:1.5;}
+  .src{font-size:11.5px;line-height:1.6;padding:9px 2px;border-bottom:1px solid var(--line);} .src b{color:var(--accent2);} .src .u{color:#6f82b0;font-size:10px;word-break:break-all;}
+  .note{font-size:10.5px;color:#6f82b0;line-height:1.5;margin-top:10px;}
+  nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:#0a1430;
+    border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr);padding:8px 0 calc(8px + env(safe-area-inset-bottom));z-index:40;}
+  nav button{background:none;border:none;color:var(--sub);font-size:10px;font-weight:600;display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px 2px;cursor:pointer;}
+  nav button .ic{font-size:18px;} nav button.on{color:var(--accent);}
+</style>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0a1430">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="人生OS">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="favicon-32.png" sizes="32x32">
+<script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}</script>
+</head>
+<body>
+<div class="demo-flag">DEMO ・ FICTIONAL（公的統計の平均値ベース・モデル試算／個人の助言ではありません）</div>
+<header><div class="brand">株式会社くらし君 ／ <b>人生OS</b>・老後資金ロードマップ</div></header>
+<div class="gsw">
+  <button class="on" data-g="male">男性<small>569万</small></button>
+  <button data-g="female">女性<small>316万</small></button>
+  <button data-g="couple">夫婦世帯<small>885万</small></button>
+  <button data-g="koumuin">国家公務員<small>639万</small></button>
+  <button data-g="chihou">地方公務員<small>約600万</small></button>
+</div>
+<h1 id="hd-title">平均像（概要）</h1>
+<div class="lead" id="hd-lead">公的統計の平均値だけで作った、当たり障りのない「平均的な日本人」のモデルです。</div>
+
+<!-- 概要 -->
+<section class="screen on" id="s-top">
+  <div class="pchip"><div class="av" id="p-av">🧑🏻</div><div><div class="pn" id="p-name"></div><div class="pd" id="p-desc"></div></div></div>
+  <div class="kpis" style="margin-top:8px">
+    <div class="kpi money"><div class="n" id="k-income"></div><div class="l">平均年収(額面)</div></div>
+    <div class="kpi acc"><div class="n" id="k-take"></div><div class="l">月の手取り(目安)</div></div>
+    <div class="kpi good"><div class="n">2,000万</div><div class="l">老後の目標(金融庁)</div></div>
+  </div>
+  <div class="card"><h3>この人物像のもと（すべて平均値）</h3>
+    <div class="li"><span class="mk">・</span><span>平均年収＝<b>国税庁 民間給与実態統計(令和5年)</b></span></div>
+    <div class="li"><span class="mk">・</span><span>平均初婚年齢＝<b id="t-marriage"></b>（厚労省 人口動態 令和5年）</span></div>
+    <div class="li"><span class="mk">・</span><span>老後の必要額＝<b>金融庁 2019年報告書</b>（高齢夫婦無職世帯の月赤字 約5.5万×30年）</span></div>
+  </div>
+  <div class="insight">この画面は「平均」だけで構成しています。<b>結婚する/しない・子の有無</b>などは前提に置かず、誰の状況でも当たり障りなく説明できる土台にしています。</div>
+</section>
+
+<!-- 家計 -->
+<section class="screen" id="s-money">
+  <div class="scr-title">家計と積立余地 <small>手取りからいくら回せるか</small></div>
+  <div class="kpis">
+    <div class="kpi money"><div class="n" id="m-take"></div><div class="l">月の手取り</div></div>
+    <div class="kpi good"><div class="n">¥32,600</div><div class="l">推奨積立/月</div></div>
+    <div class="kpi acc"><div class="n" id="m-pct"></div><div class="l">手取りに占める割合</div></div>
+  </div>
+  <div class="scr-title" style="font-size:13px">財務ストラクチャー図 <small>額面→税社保→手取り→生活費/積立</small></div>
+  <div class="struct">
+    <div class="gross">月の額面：<b id="st-gross"></b></div>
+    <div class="stk" id="st-bar"></div>
+    <div class="stk-leg" id="st-leg"></div>
+    <div class="tree" id="st-tree"></div>
+  </div>
+  <div class="insight" id="money-insight"></div>
+  <div class="note">※手取りは額面の約79〜80%で試算（税・社会保険料控除のモデル）。生活費は残差。賞与込み年収を12等分した目安です。</div>
+</section>
+
+<!-- 老後目標 -->
+<section class="screen" id="s-goal">
+  <div class="scr-title">老後の目標額（エビデンス） <small>なぜ2,000万か</small></div>
+  <div class="goalbox"><div class="big">2,000万円</div><div class="cap">65歳以降に「年金以外で」自助で備える目安（金融庁モデル）</div></div>
+  <div class="prog"><div class="f" id="goal-prog" style="width:15%">例：現在 300万（15%）</div></div>
+  <div class="card"><h3>根拠（金融庁 2019年報告書）</h3>
+    <div class="li"><span class="mk">①</span><span>高齢夫婦無職世帯：実収入 <b>約20.9万/月</b>・実支出 <b>約26.4万/月</b></span></div>
+    <div class="li"><span class="mk">②</span><span>毎月の不足 <b>約5.5万円</b> × 30年 ≈ <b>約2,000万円</b></span></div>
+  </div>
+  <div class="card"><h3>裏づけ（最新の家計調査・年金）</h3>
+    <div class="li"><span class="mk">・</span><span>65歳以上 無職世帯の支出＝<b>約28.7万/月</b>（総務省 家計調査 2024）</span></div>
+    <div class="li"><span class="mk">・</span><span>厚生年金 平均＝<b>約15.1万/月</b>（厚労省 令和5年度）</span></div>
+    <div class="li"><span class="mk">・</span><span>高齢無職世帯の貯蓄 中央値＝<b>約1,600万</b>（同 家計調査）</span></div>
+  </div>
+  <div class="insight"><b>注意：</b>2,000万は「平均の不足額」からの目安で、収入・支出・寿命で大きく変わります（報告書も明記）。脅すための数字ではなく、逆算の起点として使います。</div>
+</section>
+
+<!-- ロードマップ -->
+<section class="screen" id="s-road">
+  <div class="scr-title">2,000万への逆算 <small>34歳→65歳・31年</small></div>
+  <div class="two">
+    <div class="c cash"><div class="n">¥53,800</div><div class="l">現金だけで貯める/月</div></div>
+    <div class="c inv"><div class="n">¥32,600</div><div class="l">年3%で運用する/月</div></div>
+  </div>
+  <div class="insight" style="margin-top:6px">同じ2,000万でも、<b>運用（年3%・つみたてNISA想定）</b>なら月の負担は約4割減。早く始めるほど複利が効きます。<b id="road-pct"></b></div>
+  <div class="scr-title" style="font-size:13px;margin-top:16px">年齢別ロードマップ（平均モデル）</div>
+  <div class="flow" id="road-flow"></div>
+  <div class="note">※年3%は元本保証ではありません。運用成果は変動します。本デモは平均値による試算で、個別の投資助言ではありません。</div>
+</section>
+
+<!-- 出典 -->
+<section class="screen" id="s-src">
+  <div class="scr-title">出典（一次情報） <small>すべて公的統計</small></div>
+  <div class="src"><b>① 平均給与</b>：国税庁 令和5年分 民間給与実態統計調査（2024年9月公表）<div class="u">nta.go.jp/publication/statistics/kokuzeicho/minkan/gaiyou/2023.htm</div></div>
+  <div class="src"><b>② 老後資金</b>：金融庁 金融審議会 報告書「高齢社会における資産形成・管理」（2019年6月）<div class="u">fsa.go.jp/singi/singi_kinyu/tosin/20190603/01.pdf</div></div>
+  <div class="src"><b>③ 家計・貯蓄</b>：総務省 家計調査報告（2024年）<div class="u">stat.go.jp/data/kakei/sokuhou/tsuki/index.html</div></div>
+  <div class="src"><b>④ 年金</b>：厚労省 令和5年度 厚生年金保険・国民年金事業の概況<div class="u">mhlw.go.jp/content/001359541.pdf</div></div>
+  <div class="src"><b>⑤ 初婚年齢</b>：厚労省 令和5年(2023) 人口動態統計月報年計（概数）<div class="u">mhlw.go.jp/toukei/saikin/hw/jinkou/geppo/nengai23/dl/gaikyouR5.pdf</div></div>
+  <div class="src"><b>⑥ 国家公務員</b>：人事院 国家公務員給与等実態調査（平均給与月額41.4万・賞与4.65ヶ月→年収約639万）<div class="u">jinji.go.jp/seisaku/kankoku/kouindex.html</div></div>
+  <div class="src"><b>⑦ 地方公務員</b>：総務省 令和5年 地方公務員給与実態調査（一般行政職 平均給料月額 約318千円・平均年齢42.1歳。年収約600万は手当・賞与込みの概算）<div class="u">soumu.go.jp/main_sosiki/jichi_gyousei/c-gyousei/teiin-kyuuyo02_R5_kekka.html</div></div>
+  <div class="note">数値は公表値を丸めて表示。国家公務員は地域手当（東京勤務が多い）で全国平均が上振れ、地方公務員は全国平均で下がる。手取り・積立額・年3%運用はモデル試算。実額は個人差があります。</div>
+</section>
+
+<nav id="nav">
+  <button class="on" data-s="top" data-t="平均像（概要）" data-l="公的統計の平均値だけで作った、当たり障りのない「平均的な日本人」のモデルです。"><span class="ic">🧑</span>平均像</button>
+  <button data-s="money" data-t="家計と積立余地" data-l="月の手取りから、老後に向けていくら回せるかをモデルで見ます。"><span class="ic">💰</span>家計</button>
+  <button data-s="goal" data-t="老後の目標額" data-l="2,000万円はどこから来た数字か。金融庁モデルと最新の家計調査で根拠を示します。"><span class="ic">🎯</span>目標</button>
+  <button data-s="road" data-t="2,000万への逆算" data-l="34歳から65歳まで31年。現金と運用、それぞれの毎月の積立額を逆算します。"><span class="ic">🗺️</span>計画</button>
+  <button data-s="src" data-t="出典（一次情報）" data-l="使った数字はすべて公的統計です。出典を明示します。"><span class="ic">📚</span>出典</button>
+</nav>
+
+<script>
+const TARGET=20000000, START=34, RETIRE=65, MONTHS=(RETIRE-START)*12; // 372
+const cashPM=Math.round(TARGET/MONTHS/100)*100; // ~53,800
+const r=0.03/12, invPM=Math.round(TARGET*r/(Math.pow(1+r,MONTHS)-1)/100)*100; // ~32,600
+const P={
+  male:{av:'🧑🏻',name:'平均的な男性・34歳',desc:'会社員（平均像）／平均年収 <b>569万</b>',income:'569万',marriage:'31.1歳',take:374000},
+  female:{av:'👩🏻',name:'平均的な女性・34歳',desc:'会社員（平均像）／平均年収 <b>316万</b>',income:'316万',marriage:'29.7歳',take:211000},
+  couple:{av:'👫',name:'平均的な夫婦世帯',desc:'夫＋妻（平均像）／世帯年収 <b>885万</b>',income:'885万',marriage:'夫31.1/妻29.7歳',take:585000},
+  koumuin:{av:'🧑🏻‍💼',name:'平均的な国家公務員',desc:'一般職（平均像）／平均年収 <b>639万</b>',income:'639万',marriage:'31.1歳',take:421000},
+  chihou:{av:'🏛️',name:'平均的な地方公務員',desc:'一般行政職・全国平均／年収概算 <b>約600万</b>',income:'約600万',marriage:'31.1歳',take:395000},
+};
+const $=s=>document.querySelector(s);
+const yen=n=>'¥'+n.toLocaleString();
+const man=n=>Math.round(n/10000)+'万';
+let g='male';
+
+function render(){
+  const p=P[g];
+  $('#p-av').textContent=p.av; $('#p-name').textContent=p.name; $('#p-desc').innerHTML=p.desc;
+  $('#k-income').textContent=p.income; $('#k-take').textContent=man(p.take);
+  $('#t-marriage').textContent=p.marriage;
+  // money
+  $('#m-take').textContent=man(p.take);
+  const pct=(invPM/p.take*100); $('#m-pct').textContent=pct.toFixed(1)+'%';
+  // 財務ストラクチャー図
+  const gross=Math.round(p.take/0.79), tax=gross-p.take, life=p.take-invPM, save=invPM;
+  $('#st-gross').textContent=yen(gross);
+  const segs=[['税・社会保険',tax,'#ff6b81'],['生活費',life,'#5ec8ff'],['老後積立',save,'#43d18a']];
+  $('#st-bar').innerHTML=segs.map(([k,v,c])=>{const w=(v/gross*100).toFixed(1);
+    return `<span class="seg" style="width:${w}%;background:${c}">${v/gross>0.12?(v/gross*100).toFixed(0)+'%':''}</span>`;}).join('');
+  $('#st-leg').innerHTML=segs.map(([k,v,c])=>`<span class="it"><span class="sw" style="background:${c}"></span>${k} ${yen(v)}</span>`).join('');
+  $('#st-tree').innerHTML=
+    `<div class="node t-gross"><span class="k">月の額面</span><span class="v">${yen(gross)}</span></div>
+     <div class="child">
+       <div class="node t-tax"><span class="k">− 税・社会保険（約21%）</span><span class="v">−${yen(tax)}</span></div>
+       <div class="node t-take"><span class="k">＝ 手取り</span><span class="v">${yen(p.take)}</span></div>
+       <div class="child">
+         <div class="node t-life"><span class="k">生活費（残差）</span><span class="v">${yen(life)}</span></div>
+         <div class="node t-save"><span class="k">老後積立（年3%運用）</span><span class="v">${yen(save)}</span></div>
+       </div>
+     </div>`;
+  let verdict = pct<10?'手取りに対して<b>1割未満</b>。無理なく積み立てられる水準です。':pct<18?'手取りの<b>約1〜1.5割</b>。固定費の見直しで十分に確保できます。':'手取りに対して<b>やや重め</b>。世帯合算や固定費削減、開始年齢の前倒しで負担を下げられます。';
+  $('#money-insight').innerHTML=`月 ${yen(invPM)}（手取りの<b>${pct.toFixed(1)}%</b>）を積み立てれば、年3%運用で65歳に2,000万に届きます。${verdict}`;
+  $('#road-pct').textContent=`この人物だと、運用ルートは手取りの約${pct.toFixed(0)}%です。`;
+  // roadmap
+  const mAge = g==='female'?'30歳':'31歳';
+  $('#road-flow').innerHTML=[
+    ['24歳','就職・積立スタート','早く始めるほど複利が効く。月1万でも40年で大きな差。'],
+    [mAge,'平均初婚（任意）','世帯合算なら積立の手取り負担は半分以下に。'],
+    ['30代','子育て・教育費','支出が増える時期。積立額は一時的に下げてもゼロにしない。'],
+    ['40代','固定費の最適化','保険・通信・サブスクの見直しで積立余力を回復。'],
+    ['50代','貯蓄を加速','教育費を終えたら積立増額で着地を確実に。'],
+    ['65歳','リタイア → 2,000万 + 年金','年金 月約15万＋取り崩しで、月の赤字を埋める。'],
+  ].map(([a,t,d])=>`<div class="f"><div class="age">${a}</div><div class="ln"><div class="ft">${t}</div><div class="fd">${d}</div></div></div>`).join('');
+}
+document.querySelectorAll('.gsw button').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('.gsw button').forEach(x=>x.classList.remove('on')); b.classList.add('on'); g=b.dataset.g; render();
+}));
+document.querySelectorAll('#nav button').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('#nav button').forEach(x=>x.classList.remove('on')); b.classList.add('on');
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on')); $('#s-'+b.dataset.s).classList.add('on');
+  $('#hd-title').textContent=b.dataset.t; $('#hd-lead').textContent=b.dataset.l; window.scrollTo(0,0);
+}));
+render();
+</script>
+</body>
+</html>

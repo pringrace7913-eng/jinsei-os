@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>人生OS ｜ 老後2,000万 実行ダッシュボード（KGI→KPI→KDI）</title>
+<style>
+  :root{
+    --bg:#0a1430; --card:#16264f; --card2:#1d2f5c; --line:#2b3f70;
+    --ink:#f4f7ff; --sub:#9fb1d8; --accent:#ffd34d; --teal:#4dd0c4; --good:#43d18a;
+    --money:#5ec8ff; --bad:#ff6b81; --warn:#ff9d5b;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,"Hiragino Kaku Gothic ProN","Noto Sans JP",system-ui,sans-serif;}
+  body{max-width:480px;margin:0 auto;min-height:100vh;padding-bottom:30px;}
+  .flag{background:var(--accent);color:#1a1300;font-weight:800;font-size:10.5px;letter-spacing:.1em;text-align:center;padding:5px;position:sticky;top:0;z-index:50;}
+  header{padding:14px 18px 4px;}
+  .brand{font-size:12px;color:var(--sub);} .brand b{color:var(--accent);}
+
+  /* persona switch */
+  .persona{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin:10px 14px 2px;background:#0a1430;border:1px solid var(--line);border-radius:13px;padding:5px;}
+  .persona button{background:none;border:none;color:var(--sub);font-size:10.5px;font-weight:700;padding:9px 1px;border-radius:9px;cursor:pointer;line-height:1.2;}
+  .persona button small{display:block;font-size:8px;font-weight:500;color:#6f82b0;margin-top:2px;}
+  .persona button.on{background:var(--accent);color:#1a1300;} .persona button.on small{color:#5a4500;}
+
+  .kgi{margin:8px 16px 2px;background:linear-gradient(135deg,#16402c 0%,#173a6b 100%);border:1px solid #2f6b58;
+    border-radius:16px;padding:13px 16px;display:flex;justify-content:space-between;align-items:center;}
+  .kgi .lab{font-size:11px;color:#bfe9d6;font-weight:700;letter-spacing:.08em;}
+  .kgi .goal{font-size:26px;font-weight:800;color:var(--good);line-height:1;margin-top:2px;}
+  .kgi .right{text-align:right;} .kgi .right .n{font-size:20px;font-weight:800;color:var(--ink);} .kgi .right .s{font-size:10px;color:var(--sub);}
+
+  .ringwrap{display:flex;flex-direction:column;align-items:center;padding:12px 16px 2px;}
+  .ringbox{position:relative;width:220px;height:220px;transition:transform .4s cubic-bezier(.34,1.56,.64,1);}
+  .ringbox.pop{transform:scale(1.06);}
+  svg.ring{transform:rotate(-90deg);}
+  #arc{transition:stroke-dashoffset .7s cubic-bezier(.4,0,.2,1), stroke .45s ease;}
+  .ringctr{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;}
+  .ringctr .cap{font-size:11px;color:var(--sub);}
+  .ringctr .big{font-size:33px;font-weight:800;line-height:1.05;margin-top:2px;font-variant-numeric:tabular-nums;}
+  .ringctr .sub{font-size:11px;color:var(--sub);margin-top:3px;}
+  .verdict{margin:4px 16px 2px;border-radius:12px;padding:11px 14px;font-size:13px;line-height:1.55;text-align:center;font-weight:700;transition:all .3s;}
+  .verdict.ng{background:#3a1620;color:#ffd9df;border:1px solid #6e2a3a;}
+  .verdict.ok{background:#0f3a28;color:#baf5d6;border:1px solid #2f6b58;}
+  .coach{margin:6px 16px 2px;background:#13224a;border-left:3px solid var(--accent);border-radius:10px;padding:10px 13px;font-size:12.5px;line-height:1.5;color:#dce6ff;}
+  .coach b{color:var(--accent);}
+  .saver{margin:8px 16px 2px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;}
+  .saver .top{display:flex;justify-content:space-between;align-items:baseline;}
+  .saver .lab{font-size:12px;color:var(--sub);font-weight:700;}
+  .saver .val{font-size:20px;font-weight:800;color:var(--money);font-variant-numeric:tabular-nums;}
+  .saver input[type=range]{width:100%;margin-top:11px;-webkit-appearance:none;appearance:none;height:8px;border-radius:6px;background:#0a1430;outline:none;}
+  .saver input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:28px;height:28px;border-radius:50%;background:var(--money);border:3px solid #0a1430;box-shadow:0 0 10px #5ec8ff99;cursor:pointer;}
+  .saver input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;background:var(--money);border:3px solid #0a1430;cursor:pointer;}
+  .saver .hint{font-size:10px;color:#6f82b0;margin-top:7px;}
+
+  .sec{margin:15px 16px 6px;display:flex;align-items:baseline;gap:8px;}
+  .sec .t{font-size:15px;font-weight:800;} .sec .s{font-size:11px;color:var(--sub);}
+  .sec .reset{margin-left:auto;font-size:11px;color:var(--sub);background:none;border:1px solid var(--line);border-radius:8px;padding:4px 10px;cursor:pointer;font-weight:700;}
+  .tag{font-size:9.5px;font-weight:800;padding:3px 8px;border-radius:999px;letter-spacing:.06em;}
+  .tag.kpi{background:#143b52;color:#9fe7ff;} .tag.kdi{background:#3a2f12;color:var(--accent);} .tag.kgi{background:#16402c;color:#86f0b6;}
+
+  .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 16px;}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:11px 6px;text-align:center;}
+  .kpi .n{font-size:17px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums;} .kpi .l{font-size:9.5px;color:var(--sub);margin-top:5px;}
+  .kpi.now .n{color:var(--money);} .kpi.mo .n{color:var(--accent);} .kpi.save .n{color:var(--good);}
+
+  .kdi{margin:0 16px;}
+  .act{display:flex;gap:12px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 13px;margin-bottom:9px;cursor:pointer;transition:transform .12s, background .2s, border-color .2s;}
+  .act:active{transform:scale(.985);}
+  .act.on{background:linear-gradient(135deg,#13351f,#16264f);border-color:#3a7d5c;}
+  .act.today{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset;}
+  .box{flex:0 0 auto;width:26px;height:26px;border-radius:8px;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:transparent;transition:all .15s;}
+  .act.on .box{background:var(--good);border-color:var(--good);color:#04130a;}
+  .act .body{flex:1;} .act .name{font-size:14px;font-weight:700;} .act .ef{font-size:11.5px;color:var(--sub);margin-top:2px;}
+  .act.on .ef{color:#86f0b6;}
+  .act .todaytag{font-size:9px;font-weight:800;color:#1a1300;background:var(--accent);border-radius:999px;padding:2px 7px;margin-top:4px;display:inline-block;}
+  .act .plus{flex:0 0 auto;font-size:13px;font-weight:800;color:var(--good);}
+
+  .tree{margin:14px 16px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;}
+  .tree .row{display:flex;gap:10px;align-items:flex-start;padding:5px 0;}
+  .tree .row .dot{flex:0 0 auto;width:8px;height:8px;border-radius:50%;margin-top:6px;}
+  .tree .ind{margin-left:14px;border-left:2px solid #25386a;padding-left:12px;}
+  .tree .k{font-size:13px;font-weight:700;} .tree .d{font-size:11px;color:var(--sub);}
+  .note{font-size:10.5px;color:#6f82b0;line-height:1.5;margin:10px 16px 0;}
+  .spark{position:fixed;left:50%;top:38%;transform:translateX(-50%);font-size:42px;opacity:0;pointer-events:none;z-index:60;}
+  .spark.go{animation:pop 1s ease;}
+  @keyframes pop{0%{opacity:0;transform:translateX(-50%) scale(.4);}30%{opacity:1;transform:translateX(-50%) scale(1.2);}100%{opacity:0;transform:translateX(-50%) scale(1.6) translateY(-30px);}}
+</style>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0a1430">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="人生OS">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="favicon-32.png" sizes="32x32">
+<script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}</script>
+</head>
+<body>
+<div class="flag">DEMO ・ 仮データ／たとえばの計算・投資のおすすめではありません</div>
+<header><div class="brand">株式会社くらし君 ／ <b>人生OS</b>・老後2,000万 実行ダッシュボード</div></header>
+
+<div class="persona" id="persona">
+  <button data-p="male" class="on">男性<small>年569万</small></button>
+  <button data-p="female">女性<small>年316万</small></button>
+  <button data-p="couple">夫婦<small>世帯885万</small></button>
+  <button data-p="kokka">国家公務員<small>639万</small></button>
+  <button data-p="chihou">地方公務員<small>約600万</small></button>
+</div>
+
+<div class="kgi">
+  <div><div class="lab">ゴール（KGI）</div><div class="goal">2,000万円</div></div>
+  <div class="right"><div class="n">あと31年</div><div class="s">34歳 → 65歳</div></div>
+</div>
+
+<div class="ringwrap">
+  <div class="ringbox" id="ringbox">
+    <svg class="ring" width="220" height="220" viewBox="0 0 220 220">
+      <circle cx="110" cy="110" r="92" fill="none" stroke="#13224a" stroke-width="16"/>
+      <circle id="arc" cx="110" cy="110" r="92" fill="none" stroke="#43d18a" stroke-width="16" stroke-linecap="round" stroke-dasharray="578" stroke-dashoffset="578"/>
+    </svg>
+    <div class="ringctr">
+      <div class="cap">65歳での達成見込み</div>
+      <div class="big" id="proj">¥0万</div>
+      <div class="sub" id="rate">目標の 0%</div>
+    </div>
+  </div>
+</div>
+<div class="verdict ng" id="verdict"></div>
+<div class="coach" id="coach"></div>
+<div class="saver">
+  <div class="top"><span class="lab">💰 今の貯金（指で動かせます）</span><span class="val" id="sv-val">¥300万</span></div>
+  <input type="range" id="sv-range" min="0" max="20000000" step="100000" value="3000000">
+  <div class="hint">0 〜 2,000万のあいだで動かすと、上のリングがすぐ変わります</div>
+</div>
+
+<div class="sec"><span class="tag kpi">KPI</span><span class="t">今の成果</span><span class="s">行動すると変わる</span></div>
+<div class="kpis">
+  <div class="kpi now"><div class="n" id="kpi-now">¥300万</div><div class="l">今の貯金</div></div>
+  <div class="kpi mo"><div class="n" id="kpi-mo">¥1.0万</div><div class="l">毎月の積立</div></div>
+  <div class="kpi save"><div class="n" id="kpi-cut">¥0</div><div class="l">月のムダ削減</div></div>
+</div>
+
+<div class="sec"><span class="tag kdi">KDI</span><span class="t">今月やること</span><span class="s">押すと未来が動く</span><button class="reset" id="reset">リセット</button></div>
+<div class="kdi" id="kdi"></div>
+
+<div class="sec"><span class="tag kgi">仕組み</span><span class="t">ゴール → 成果 → 行動</span></div>
+<div class="tree">
+  <div class="tree row"><span class="dot" style="background:var(--good)"></span><div><div class="k">KGI（ゴール）：老後2,000万円</div><div class="d">最後にたどり着きたい場所</div></div></div>
+  <div class="ind">
+    <div class="tree row"><span class="dot" style="background:var(--money)"></span><div><div class="k">KPI（成果）：65歳での達成見込み・達成率</div><div class="d">今どこまで来たか。行動の結果が出る数字</div></div></div>
+    <div class="ind">
+      <div class="tree row"><span class="dot" style="background:var(--accent)"></span><div><div class="k">KDI（行動）：今月やること</div><div class="d">ここを動かすと、上の成果とゴールが動く</div></div></div>
+    </div>
+  </div>
+</div>
+<div class="note">※すべて仮の数字・たとえばの計算（投資のおすすめではありません）。年3%は元本保証ではなく、減る年もあります。「お金に働いてもらう」＝つみたてNISAなどを想定。男女・職業の数字は公的統計の平均値ベース。</div>
+<div class="spark" id="spark">🎉</div>
+
+<script>
+const GOAL=20000000, MONTHS=(65-34)*12;
+const PERSONAS={
+  male:{savings:3000000, base:10000}, female:{savings:2000000, base:6000},
+  couple:{savings:5000000, base:20000}, kokka:{savings:3500000, base:12000}, chihou:{savings:3200000, base:11000},
+};
+const ACTS=[
+  {id:'nisa', name:'つみたてNISAを設定する', ef:'お金に働いてもらう（年3%想定）', nisa:true},
+  {id:'sub',  name:'使ってないサブスクを解約', ef:'−月¥3,200 → 積立にまわす', add:3200},
+  {id:'sim',  name:'スマホを格安プランに', ef:'−月¥4,000 → 積立にまわす', add:4000},
+  {id:'ins',  name:'保険を見直す', ef:'−月¥2,500 → 積立にまわす', add:2500},
+  {id:'eat',  name:'外食を月1万へらす', ef:'−月¥10,000 → 積立にまわす', add:10000},
+  {id:'bonus',name:'ボーナスから年2回つみたて', ef:'月あたり +¥2,900', add:2900},
+];
+const $=s=>document.querySelector(s);
+const man=n=>'¥'+Math.round(n/10000).toLocaleString()+'万';
+const yen=n=>'¥'+Math.round(n).toLocaleString();
+let persona='male', savings=PERSONAS.male.savings, state={}, lastFV=0, reachedBefore=false;
+ACTS.forEach(a=>state[a.id]=false);
+
+function load(){ try{const s=JSON.parse(localStorage.getItem('kdi'));if(s){persona=s.persona||'male';savings=(s.savings!=null?s.savings:PERSONAS[persona].savings);(s.checked||[]).forEach(id=>{if(id in state)state[id]=true;});}}catch(e){} }
+function save(){ localStorage.setItem('kdi',JSON.stringify({persona,savings,checked:ACTS.filter(a=>state[a.id]).map(a=>a.id)})); }
+function syncSaver(){ const r=$('#sv-range'); if(r){r.value=savings;} const v=$('#sv-val'); if(v){v.textContent=man(savings);} }
+
+function monthly(){ let m=PERSONAS[persona].base; ACTS.forEach(a=>{if(state[a.id]&&a.add)m+=a.add;}); return m; }
+function cut(){ let c=0; ACTS.forEach(a=>{if(state[a.id]&&a.add&&a.id!=='bonus')c+=a.add;}); return c; }
+function rate(){ return (state.nisa?0.03:0.001)/12; }
+function projWith(m){ const r=rate(),n=MONTHS,g=Math.pow(1+r,n); return savings*g + m*((g-1)/r); }
+function project(){ return projWith(monthly()); }
+function neededMonthly(){ const r=rate(),n=MONTHS,g=Math.pow(1+r,n); return (GOAL - savings*g)/((g-1)/r); }
+
+function todayAction(){ return ACTS.find(a=>!state[a.id]); }
+
+function animNum(el,to){
+  const from=lastFV; const dur=550, t0=performance.now();
+  function step(t){ const k=Math.min((t-t0)/dur,1); const e=1-Math.pow(1-k,3); el.textContent=man(from+(to-from)*e); if(k<1)requestAnimationFrame(step); else el.textContent=man(to); }
+  requestAnimationFrame(step);
+}
+
+function renderKDI(){
+  const todayId=(todayAction()||{}).id;
+  $('#kdi').innerHTML=ACTS.map(a=>`
+    <div class="act ${state[a.id]?'on':''} ${a.id===todayId?'today':''}" data-id="${a.id}">
+      <div class="box">✓</div>
+      <div class="body"><div class="name">${a.name}</div><div class="ef">${a.ef}</div>${a.id===todayId?'<span class="todaytag">今日の1つ（5分）</span>':''}</div>
+      <div class="plus">${a.add?('+¥'+a.add.toLocaleString()):'運用'}</div>
+    </div>`).join('');
+  document.querySelectorAll('.act').forEach(el=>el.addEventListener('click',()=>{state[el.dataset.id]=!state[el.dataset.id];save();update(true);}));
+}
+
+function update(animate){
+  const fv=project(); const frac=Math.min(fv/GOAL,1);
+  $('#arc').style.strokeDashoffset=578*(1-frac);
+  $('#arc').style.stroke = fv>=GOAL?'#43d18a':(fv>=GOAL*0.7?'#ffd34d':'#ff9d5b');
+  if(animate) animNum($('#proj'),fv); else $('#proj').textContent=man(fv);
+  $('#rate').textContent='目標の '+Math.round(fv/GOAL*100)+'%';
+  const v=$('#verdict');
+  if(fv>=GOAL){ v.className='verdict ok'; v.innerHTML='🎉 2,000万に届きます！（見込み '+man(fv)+'）この行動を続けるだけ。'; }
+  else { v.className='verdict ng'; v.innerHTML='このままだと '+man(GOAL-fv)+' 足りません。下を押すと未来が動きます。'; }
+  // coach
+  const c=$('#coach'); const t=todayAction();
+  if(fv>=GOAL){ c.innerHTML='✅ いまの計画でゴール達成。あとは<b>毎月つづける</b>だけ。'+(t?'（次の一手：'+t.name+'）':''); }
+  else {
+    const needM=neededMonthly(); const gap=needM-monthly();
+    let line='';
+    if(!state.nisa){ line='<b>「お金に働いてもらう」をON</b>にすると、一気にラクになります。'; }
+    else if(gap>0){ line='あと<b>月'+yen(gap)+'</b>増やせば2,000万ちょうど。'; }
+    c.innerHTML=line+(t?'　今日やる1つ：<b>'+t.name+'</b>':'');
+  }
+  $('#kpi-now').textContent=man(savings);
+  $('#kpi-mo').textContent=man(monthly());
+  $('#kpi-cut').textContent=cut()?yen(cut()):'¥0';
+  document.querySelectorAll('.act').forEach(el=>el.classList.toggle('on',state[el.dataset.id]));
+  // celebrate on crossing goal
+  if(fv>=GOAL && !reachedBefore){ const s=$('#spark'); s.classList.remove('go'); void s.offsetWidth; s.classList.add('go'); const rb=$('#ringbox'); rb.classList.add('pop'); setTimeout(()=>rb.classList.remove('pop'),420); }
+  reachedBefore = fv>=GOAL;
+  lastFV=fv;
+}
+
+function setPersona(p){ persona=p; savings=PERSONAS[p].savings; document.querySelectorAll('.persona button').forEach(b=>b.classList.toggle('on',b.dataset.p===p)); syncSaver(); save(); renderKDI(); update(true); }
+document.querySelectorAll('.persona button').forEach(b=>b.addEventListener('click',()=>setPersona(b.dataset.p)));
+$('#reset').addEventListener('click',()=>{ACTS.forEach(a=>state[a.id]=false);save();reachedBefore=false;renderKDI();update(true);});
+$('#sv-range').addEventListener('input',e=>{ savings=+e.target.value; $('#sv-val').textContent=man(savings); save(); update(false); });
+
+load();
+document.querySelectorAll('.persona button').forEach(b=>b.classList.toggle('on',b.dataset.p===persona));
+syncSaver(); lastFV=0; renderKDI(); update(true);
+</script>
+</body>
+</html>

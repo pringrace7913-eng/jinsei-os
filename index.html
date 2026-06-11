@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>人生OS ｜ ホーム</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0a1430">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="人生OS">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="favicon-32.png" sizes="32x32">
+<style>
+  :root{--bg:#0a1430;--card:#16264f;--line:#2b3f70;--ink:#f4f7ff;--sub:#9fb1d8;--accent:#ffd34d;--good:#43d18a;--money:#5ec8ff;}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,"Hiragino Kaku Gothic ProN","Noto Sans JP",system-ui,sans-serif;}
+  body{max-width:480px;margin:0 auto;min-height:100vh;padding-bottom:34px;}
+  .flag{background:var(--accent);color:#1a1300;font-weight:800;font-size:10.5px;letter-spacing:.1em;text-align:center;padding:5px;}
+  header{padding:22px 20px 6px;text-align:center;}
+  .logo{width:74px;height:74px;border-radius:20px;display:block;margin:0 auto 10px;box-shadow:0 8px 24px #0006;}
+  h1{font-size:21px;font-weight:800;margin:0;}
+  .sub{font-size:12px;color:var(--sub);margin-top:5px;line-height:1.5;}
+  .sec{font-size:11px;color:var(--sub);font-weight:700;letter-spacing:.08em;margin:18px 18px 8px;}
+  .card{display:block;text-decoration:none;color:inherit;margin:0 16px 11px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:15px 16px;display:flex;align-items:center;gap:13px;transition:transform .12s,border-color .2s;}
+  .card:active{transform:scale(.985);}
+  .card.hero{background:linear-gradient(135deg,#16402c 0%,#173a6b 100%);border-color:#2f6b58;}
+  .ic{flex:0 0 auto;width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:24px;background:#0a1430;border:1px solid var(--line);}
+  .card.hero .ic{background:#0d2e20;border-color:#2f6b58;}
+  .ttl{font-size:15px;font-weight:800;line-height:1.25;}
+  .desc{font-size:11.5px;color:var(--sub);margin-top:3px;line-height:1.45;}
+  .badge{font-size:9px;font-weight:800;color:#1a1300;background:var(--accent);border-radius:999px;padding:2px 8px;display:inline-block;margin-bottom:4px;}
+  .arw{flex:0 0 auto;color:var(--sub);font-size:20px;}
+  .tip{margin:18px 16px 0;background:#13224a;border-left:3px solid var(--accent);border-radius:10px;padding:11px 13px;font-size:11.5px;line-height:1.6;color:#dce6ff;}
+  .tip b{color:var(--accent);}
+  .off{margin:10px 16px 0;font-size:10.5px;color:#6f82b0;text-align:center;line-height:1.5;}
+  #offdot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--good);margin-right:5px;vertical-align:middle;}
+</style>
+</head>
+<body>
+<div class="flag">DEMO ・ 仮データ／たとえばの計算・投資のおすすめではありません</div>
+<header>
+  <img class="logo" src="icon-192.png" alt="人生OS">
+  <h1>人生OS</h1>
+  <div class="sub">株式会社くらし君 ／ お金の「ゴール → 成果 → 行動」を見える化</div>
+</header>
+
+<div class="sec">▶ まずはこれ</div>
+<a class="card hero" href="jinsei-os-kdi.html">
+  <div class="ic">🎯</div>
+  <div style="flex:1;">
+    <span class="badge">本命</span>
+    <div class="ttl">老後2,000万 実行ダッシュボード</div>
+    <div class="desc">スライダーと「今月やること」を押すと、未来の達成見込みがその場で動く（KGI→KPI→KDI）</div>
+  </div>
+  <div class="arw">›</div>
+</a>
+
+<div class="sec">▶ そのほか</div>
+<a class="card" href="jinsei-os-roadmap.html">
+  <div class="ic">🗺️</div>
+  <div style="flex:1;">
+    <div class="ttl">老後資金ロードマップ</div>
+    <div class="desc">男女・世帯・公務員など5区分の平均データで、必要額と毎月の積立をざっくり把握</div>
+  </div>
+  <div class="arw">›</div>
+</a>
+<a class="card" href="sagyo-os-kdi.html">
+  <div class="ic">✅</div>
+  <div style="flex:1;">
+    <div class="ttl">作業OS ・ 後追い管理</div>
+    <div class="desc">3ペルソナの日々のタスクを後追いで管理するデモ</div>
+  </div>
+  <div class="arw">›</div>
+</a>
+
+<div class="tip">
+  📲 <b>ホーム画面に追加</b>すると、アプリのように1タップで開けます。<br>
+  iPhone：共有ボタン <b>⬆️</b> →「ホーム画面に追加」／Android：メニュー <b>⋮</b> →「ホーム画面に追加」
+</div>
+<div class="off"><span id="offdot"></span><span id="offtxt">オフライン対応：一度開けば、電波が切れても見られます</span></div>
+
+<script>
+  if('serviceWorker' in navigator){
+    window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+  }
+  function setOff(){
+    var t=document.getElementById('offtxt'), d=document.getElementById('offdot');
+    if(navigator.onLine){ t.textContent='オフライン対応：一度開けば、電波が切れても見られます'; d.style.background='#43d18a'; }
+    else { t.textContent='いまオフラインですが、保存済みなので表示できています'; d.style.background='#ff9d5b'; }
+  }
+  window.addEventListener('online',setOff); window.addEventListener('offline',setOff); setOff();
+</script>
+</body>
+</html>

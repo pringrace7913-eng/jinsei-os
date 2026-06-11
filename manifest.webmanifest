@@ -1,0 +1,17 @@
+{
+  "name": "人生OS ・ 老後2,000万 実行ダッシュボード",
+  "short_name": "人生OS",
+  "description": "KGI→KPI→KDI で老後資金を見える化する実行ダッシュボード（デモ・仮データ）",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0a1430",
+  "theme_color": "#0a1430",
+  "lang": "ja",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
