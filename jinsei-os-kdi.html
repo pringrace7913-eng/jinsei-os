@@ -52,6 +52,9 @@
   .saver input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:28px;height:28px;border-radius:50%;background:var(--money);border:3px solid #0a1430;box-shadow:0 0 10px #5ec8ff99;cursor:pointer;}
   .saver input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;background:var(--money);border:3px solid #0a1430;cursor:pointer;}
   .saver .hint{font-size:10px;color:#6f82b0;margin-top:7px;}
+  .saver.age .val{color:var(--teal);}
+  .saver.age input[type=range]::-webkit-slider-thumb{background:var(--teal);box-shadow:0 0 10px #4dd0c499;}
+  .saver.age input[type=range]::-moz-range-thumb{background:var(--teal);}
 
   .sec{margin:15px 16px 6px;display:flex;align-items:baseline;gap:8px;}
   .sec .t{font-size:15px;font-weight:800;} .sec .s{font-size:11px;color:var(--sub);}
@@ -109,7 +112,7 @@
 
 <div class="kgi">
   <div><div class="lab">ゴール（KGI）</div><div class="goal">2,000万円</div></div>
-  <div class="right"><div class="n">あと31年</div><div class="s">34歳 → 65歳</div></div>
+  <div class="right"><div class="n" id="years">あと31年</div><div class="s" id="agespan">34歳 → 65歳</div></div>
 </div>
 
 <div class="ringwrap">
@@ -131,6 +134,11 @@
   <div class="top"><span class="lab">💰 今の貯金（指で動かせます）</span><span class="val" id="sv-val">¥300万</span></div>
   <input type="range" id="sv-range" min="0" max="20000000" step="100000" value="3000000">
   <div class="hint">0 〜 2,000万のあいだで動かすと、上のリングがすぐ変わります</div>
+</div>
+<div class="saver age">
+  <div class="top"><span class="lab">🎂 今の年齢（指で動かせます）</span><span class="val" id="age-val">34歳</span></div>
+  <input type="range" id="age-range" min="18" max="64" step="1" value="34">
+  <div class="hint">若いほど「お金に働いてもらう」期間が長く、リングが大きく動きます（退職は65歳で計算）</div>
 </div>
 
 <div class="sec"><span class="tag kpi">KPI</span><span class="t">今の成果</span><span class="s">行動すると変わる</span></div>
@@ -157,7 +165,7 @@
 <div class="spark" id="spark">🎉</div>
 
 <script>
-const GOAL=20000000, MONTHS=(65-34)*12;
+const GOAL=20000000, RETIRE=65;
 const PERSONAS={
   male:{savings:3000000, base:10000}, female:{savings:2000000, base:6000},
   couple:{savings:5000000, base:20000}, kokka:{savings:3500000, base:12000}, chihou:{savings:3200000, base:11000},
@@ -173,19 +181,21 @@ const ACTS=[
 const $=s=>document.querySelector(s);
 const man=n=>'¥'+Math.round(n/10000).toLocaleString()+'万';
 const yen=n=>'¥'+Math.round(n).toLocaleString();
-let persona='male', savings=PERSONAS.male.savings, state={}, lastFV=0, reachedBefore=false;
+let persona='male', savings=PERSONAS.male.savings, age=34, state={}, lastFV=0, reachedBefore=false;
 ACTS.forEach(a=>state[a.id]=false);
 
-function load(){ try{const s=JSON.parse(localStorage.getItem('kdi'));if(s){persona=s.persona||'male';savings=(s.savings!=null?s.savings:PERSONAS[persona].savings);(s.checked||[]).forEach(id=>{if(id in state)state[id]=true;});}}catch(e){} }
-function save(){ localStorage.setItem('kdi',JSON.stringify({persona,savings,checked:ACTS.filter(a=>state[a.id]).map(a=>a.id)})); }
-function syncSaver(){ const r=$('#sv-range'); if(r){r.value=savings;} const v=$('#sv-val'); if(v){v.textContent=man(savings);} }
+function load(){ try{const s=JSON.parse(localStorage.getItem('kdi'));if(s){persona=s.persona||'male';savings=(s.savings!=null?s.savings:PERSONAS[persona].savings);if(s.age!=null)age=s.age;(s.checked||[]).forEach(id=>{if(id in state)state[id]=true;});}}catch(e){} }
+function save(){ localStorage.setItem('kdi',JSON.stringify({persona,savings,age,checked:ACTS.filter(a=>state[a.id]).map(a=>a.id)})); }
+function syncSaver(){ const r=$('#sv-range'); if(r){r.value=savings;} const v=$('#sv-val'); if(v){v.textContent=man(savings);}
+  const ar=$('#age-range'); if(ar){ar.value=age;} const av=$('#age-val'); if(av){av.textContent=age+'歳';} }
 
+function months(){ return (RETIRE-age)*12; }
 function monthly(){ let m=PERSONAS[persona].base; ACTS.forEach(a=>{if(state[a.id]&&a.add)m+=a.add;}); return m; }
 function cut(){ let c=0; ACTS.forEach(a=>{if(state[a.id]&&a.add&&a.id!=='bonus')c+=a.add;}); return c; }
 function rate(){ return (state.nisa?0.03:0.001)/12; }
-function projWith(m){ const r=rate(),n=MONTHS,g=Math.pow(1+r,n); return savings*g + m*((g-1)/r); }
+function projWith(m){ const r=rate(),n=months(),g=Math.pow(1+r,n); return savings*g + m*((g-1)/r); }
 function project(){ return projWith(monthly()); }
-function neededMonthly(){ const r=rate(),n=MONTHS,g=Math.pow(1+r,n); return (GOAL - savings*g)/((g-1)/r); }
+function neededMonthly(){ const r=rate(),n=months(),g=Math.pow(1+r,n); return (GOAL - savings*g)/((g-1)/r); }
 
 function todayAction(){ return ACTS.find(a=>!state[a.id]); }
 
@@ -225,6 +235,8 @@ function update(animate){
     else if(gap>0){ line='あと<b>月'+yen(gap)+'</b>増やせば2,000万ちょうど。'; }
     c.innerHTML=line+(t?'　今日やる1つ：<b>'+t.name+'</b>':'');
   }
+  $('#years').textContent='あと'+(RETIRE-age)+'年';
+  $('#agespan').textContent=age+'歳 → '+RETIRE+'歳';
   $('#kpi-now').textContent=man(savings);
   $('#kpi-mo').textContent=man(monthly());
   $('#kpi-cut').textContent=cut()?yen(cut()):'¥0';
@@ -239,6 +251,7 @@ function setPersona(p){ persona=p; savings=PERSONAS[p].savings; document.querySe
 document.querySelectorAll('.persona button').forEach(b=>b.addEventListener('click',()=>setPersona(b.dataset.p)));
 $('#reset').addEventListener('click',()=>{ACTS.forEach(a=>state[a.id]=false);save();reachedBefore=false;renderKDI();update(true);});
 $('#sv-range').addEventListener('input',e=>{ savings=+e.target.value; $('#sv-val').textContent=man(savings); save(); update(false); });
+$('#age-range').addEventListener('input',e=>{ age=+e.target.value; $('#age-val').textContent=age+'歳'; save(); update(false); });
 
 load();
 document.querySelectorAll('.persona button').forEach(b=>b.classList.toggle('on',b.dataset.p===persona));
