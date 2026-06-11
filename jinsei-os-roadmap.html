@@ -82,6 +82,22 @@
     border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr);padding:8px 0 calc(8px + env(safe-area-inset-bottom));z-index:40;}
   nav button{background:none;border:none;color:var(--sub);font-size:10px;font-weight:600;display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px 2px;cursor:pointer;}
   nav button .ic{font-size:18px;} nav button.on{color:var(--accent);}
+  /* interactive planner */
+  .planner{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px 14px;margin-bottom:10px;}
+  .prow{display:flex;justify-content:space-between;align-items:baseline;}
+  .plab{font-size:12px;color:var(--sub);font-weight:700;}
+  .pval{font-size:19px;font-weight:800;font-variant-numeric:tabular-nums;} .pval.money{color:var(--money);} .pval.acc{color:var(--accent);}
+  .planner input[type=range]{width:100%;margin-top:9px;-webkit-appearance:none;appearance:none;height:8px;border-radius:6px;background:#0a1430;outline:none;}
+  .planner input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:26px;height:26px;border-radius:50%;background:var(--accent);border:3px solid #0a1430;box-shadow:0 0 10px #ffd34d99;cursor:pointer;}
+  .planner input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--accent);border:3px solid #0a1430;cursor:pointer;}
+  .planner input#rd-save::-webkit-slider-thumb{background:var(--money);box-shadow:0 0 10px #5ec8ff99;}
+  .planner input#rd-save::-moz-range-thumb{background:var(--money);}
+  .planner .phint{font-size:10px;color:#6f82b0;margin-top:6px;}
+  .grow{display:flex;align-items:center;gap:9px;margin:6px 0;font-size:11px;}
+  .grow .gy{min-width:44px;color:var(--sub);font-weight:700;}
+  .grow .gtrack{flex:1;display:flex;height:17px;background:#091026;border:1px solid #1c2c55;border-radius:8px;overflow:hidden;}
+  .grow .gp{background:var(--money);height:100%;transition:width .5s ease;} .grow .gg{background:var(--good);height:100%;transition:width .5s ease;}
+  .grow .gv{min-width:62px;text-align:right;font-weight:700;font-variant-numeric:tabular-nums;}
 </style>
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0a1430">
@@ -157,15 +173,35 @@
   <div class="insight"><b>注意：</b>2,000万は「平均の不足額」からの目安で、収入・支出・寿命で大きく変わります（報告書も明記）。脅すための数字ではなく、逆算の起点として使います。</div>
 </section>
 
-<!-- ロードマップ -->
+<!-- ロードマップ（指で動かす） -->
 <section class="screen" id="s-road">
-  <div class="scr-title">2,000万への逆算 <small>34歳→65歳・31年</small></div>
-  <div class="two">
-    <div class="c cash"><div class="n">¥53,800</div><div class="l">現金だけで貯める/月</div></div>
-    <div class="c inv"><div class="n">¥32,600</div><div class="l">年3%で運用する/月</div></div>
+  <div class="scr-title">2,000万への計画 <small>指で動かして、自分に合わせる</small></div>
+  <div class="planner">
+    <div class="prow"><span class="plab">🎂 今の年齢</span><span class="pval acc" id="rd-age-v">34歳</span></div>
+    <input type="range" id="rd-age" min="22" max="60" step="1" value="34">
+    <div class="prow" style="margin-top:13px"><span class="plab">💰 毎月の積立</span><span class="pval money" id="rd-save-v">¥32,600</span></div>
+    <input type="range" id="rd-save" min="0" max="100000" step="1000" value="32600">
+    <div class="phint">2つを動かすと、下の見込みと「お金の育ち方」がすぐ変わります（年3%運用・つみたてNISA想定）</div>
   </div>
-  <div class="insight" style="margin-top:6px">同じ2,000万でも、<b>運用（年3%・つみたてNISA想定）</b>なら月の負担は約4割減。早く始めるほど複利が効きます。<b id="road-pct"></b></div>
-  <div class="scr-title" style="font-size:13px;margin-top:16px">年齢別ロードマップ（平均モデル）</div>
+
+  <div class="goalbox">
+    <div class="cap">65歳での見込み（年3%で運用した場合）</div>
+    <div class="big" id="rd-proj">¥0万</div>
+    <div class="prog"><div class="f" id="rd-prog" style="width:0%">0%</div></div>
+    <div class="cap" id="rd-verdict"></div>
+  </div>
+
+  <div class="two">
+    <div class="c inv"><div class="n" id="rd-need">¥0</div><div class="l">2,000万に届く積立/月(年3%)</div></div>
+    <div class="c cash"><div class="n" id="rd-cash">¥0</div><div class="l">現金だけなら/月</div></div>
+  </div>
+
+  <div class="scr-title" style="font-size:13px;margin-top:14px">お金の育ち方 <small>年ごとの残高（元本＋運用益）</small></div>
+  <div id="rd-growth"></div>
+  <div class="stk-leg" style="margin-top:4px"><span class="it"><span class="sw" style="background:var(--money)"></span>積み立てた元本</span><span class="it"><span class="sw" style="background:var(--good)"></span>運用でふえた分</span></div>
+  <div class="insight" id="rd-insight"></div>
+
+  <div class="scr-title" style="font-size:13px;margin-top:16px">人生の節目（平均モデル）</div>
   <div class="flow" id="road-flow"></div>
   <div class="note">※年3%は元本保証ではありません。運用成果は変動します。本デモは平均値による試算で、個別の投資助言ではありません。<br>出典：平均給与＝国税庁「民間給与実態統計調査」令和5年分（男性569万・女性316万）／公務員＝人事院・総務省の給与実態調査／老後2,000万＝金融庁・金融審議会報告書(2019)に基づく概数。</div>
 </section>
@@ -187,7 +223,7 @@
   <button class="on" data-s="top" data-t="平均像（概要）" data-l="公的統計の平均値だけで作った、当たり障りのない「平均的な日本人」のモデルです。"><span class="ic">🧑</span>平均像</button>
   <button data-s="money" data-t="家計と積立余地" data-l="月の手取りから、老後に向けていくら回せるかをモデルで見ます。"><span class="ic">💰</span>家計</button>
   <button data-s="goal" data-t="老後の目標額" data-l="2,000万円はどこから来た数字か。金融庁モデルと最新の家計調査で根拠を示します。"><span class="ic">🎯</span>目標</button>
-  <button data-s="road" data-t="2,000万への逆算" data-l="34歳から65歳まで31年。現金と運用、それぞれの毎月の積立額を逆算します。"><span class="ic">🗺️</span>計画</button>
+  <button data-s="road" data-t="2,000万への計画" data-l="今の年齢と毎月の積立を指で動かすと、65歳での見込みと「お金の育ち方」がすぐ変わります。"><span class="ic">🗺️</span>計画</button>
   <button data-s="src" data-t="出典（一次情報）" data-l="使った数字はすべて公的統計です。出典を明示します。"><span class="ic">📚</span>出典</button>
 </nav>
 
@@ -234,7 +270,6 @@ function render(){
      </div>`;
   let verdict = pct<10?'手取りに対して<b>1割未満</b>。無理なく積み立てられる水準です。':pct<18?'手取りの<b>約1〜1.5割</b>。固定費の見直しで十分に確保できます。':'手取りに対して<b>やや重め</b>。世帯合算や固定費削減、開始年齢の前倒しで負担を下げられます。';
   $('#money-insight').innerHTML=`月 ${yen(invPM)}（手取りの<b>${pct.toFixed(1)}%</b>）を積み立てれば、年3%運用で65歳に2,000万に届きます。${verdict}`;
-  $('#road-pct').textContent=`この人物だと、運用ルートは手取りの約${pct.toFixed(0)}%です。`;
   // roadmap
   const mAge = g==='female'?'30歳':'31歳';
   $('#road-flow').innerHTML=[
@@ -245,7 +280,28 @@ function render(){
     ['50代','貯蓄を加速','教育費を終えたら積立増額で、着地に近づけやすく。'],
     ['65歳','リタイア → 2,000万 + 年金','年金 月約15万＋取り崩しで、月の赤字を埋める。'],
   ].map(([a,t,d])=>`<div class="f"><div class="age">${a}</div><div class="ln"><div class="ft">${t}</div><div class="fd">${d}</div></div></div>`).join('');
+  renderRoad();
 }
+function renderRoad(){
+  const age=+$('#rd-age').value, save=+$('#rd-save').value, R=0.03/12;
+  const n=Math.max(1,(RETIRE-age)*12), totYears=RETIRE-age;
+  $('#rd-age-v').textContent=age+'歳';
+  $('#rd-save-v').textContent=yen(save);
+  const proj=save*((Math.pow(1+R,n)-1)/R);
+  const principal=save*n, gain=Math.max(0,proj-principal);
+  $('#rd-proj').textContent='¥'+man(proj);
+  const pct=Math.round(proj/TARGET*100);
+  const f=$('#rd-prog'); f.style.width=Math.min(pct,100)+'%'; f.textContent=pct+'%';
+  $('#rd-verdict').textContent = proj>=TARGET ? `2,000万に届きます（うち運用でふえた分 ¥${man(gain)}）` : `2,000万まで あと ¥${man(TARGET-proj)}`;
+  const needInv=Math.round(TARGET*R/(Math.pow(1+R,n)-1)/100)*100, needCash=Math.round(TARGET/n/100)*100;
+  $('#rd-need').textContent=yen(needInv); $('#rd-cash').textContent=yen(needCash);
+  const marks=[]; for(let y=5;y<totYears;y+=5)marks.push(y); if(totYears>0)marks.push(totYears);
+  const maxBal=proj||1;
+  $('#rd-growth').innerHTML=marks.map(y=>{const m=y*12,bal=save*((Math.pow(1+R,m)-1)/R),pr=save*m,gn=Math.max(0,bal-pr);
+    return `<div class="grow"><span class="gy">${age+y}歳</span><span class="gtrack"><span class="gp" style="width:${(pr/maxBal*100).toFixed(1)}%"></span><span class="gg" style="width:${(gn/maxBal*100).toFixed(1)}%"></span></span><span class="gv">¥${man(bal)}</span></div>`;}).join('');
+  $('#rd-insight').innerHTML = save<=0 ? '毎月の積立を動かすと、未来ののびが変わります。まずは少額からでも。' : `毎月 <b>${yen(save)}</b> を ${totYears}年つづけると、元本 ¥${man(principal)} が <b>¥${man(proj)}</b> に。差の <b>¥${man(gain)}</b> が「お金に働いてもらった」分（年3%想定）。`;
+}
+['#rd-age','#rd-save'].forEach(sel=>{const el=$(sel); if(el)el.addEventListener('input',renderRoad);});
 document.querySelectorAll('.gsw button').forEach(b=>b.addEventListener('click',()=>{
   document.querySelectorAll('.gsw button').forEach(x=>x.classList.remove('on')); b.classList.add('on'); g=b.dataset.g; render();
 }));
