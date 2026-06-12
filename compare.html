@@ -84,6 +84,13 @@
   .gmock .gtr .st.todo{background:#fce8e6;color:#c5221f;} .gmock .gtr .st.done{background:#e6f4ea;color:#188038;}
   .gmock .ghint{font-size:10px;color:#41506e;line-height:1.5;padding:10px 12px;background:#e3e8f2;border-top:1px solid #d8deec;}
   .gmock .ghint b{color:#1a3a7a;}
+  /* 実物リンク（これは本当に動く） */
+  .real{margin:14px 16px 2px;background:linear-gradient(135deg,#13351f,#173a6b);border:1px solid #2f6b58;border-radius:15px;padding:15px;}
+  .real .rt{font-size:15px;font-weight:800;color:var(--good);} .real .rs{font-size:11.5px;color:#dce6ff;margin:5px 0 11px;line-height:1.5;}
+  .real a.rbtn{display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff;font-weight:800;font-size:13px;border-radius:11px;padding:13px 14px;margin-bottom:8px;}
+  .real a.rbtn .ri{font-size:18px;flex:0 0 auto;} .real a.rbtn .rd{font-size:10px;font-weight:500;color:#cfe;opacity:.85;margin-top:2px;}
+  .real a.s{background:#188038;} .real a.b{background:#1a73e8;} .real a.k{background:#9334e6;}
+  .real a.rbtn .rx{margin-left:auto;font-size:16px;opacity:.8;}
 </style>
 </head>
 <body>
@@ -145,7 +152,14 @@
   </div>
   <div class="ghint">▲ 派手さはないが、<b>御社の誰でも開けて・直せて・履歴が残る</b>。入力は<b>AppSheet</b>、データは<b>スプレッドシート</b>、自動化は<b>GAS</b>。これが"回す"版です。</div>
 </div>
-<div class="note">※上はGoogle既存（Looker Studio／AppSheet）で組んだ場合のイメージ画像です（実埋め込みではありません）。実構成は要件で変わります。</div>
+<div class="real">
+  <div class="rt">★ これは"イメージ"じゃない。本物が動いています。</div>
+  <div class="rs">上の見込み・グラフは、Apps Scriptが生成した<b>本物のGoogleスプレッドシートの計算式</b>が出しています。下のボタンから実物が開きます（仮データ・デモ）。</div>
+  <a class="rbtn s" href="https://docs.google.com/spreadsheets/d/1mgSqrRFarhfaE5a9dVEpezxmPpaWLWmf5XI1EouI9Hg/edit" target="_blank"><span class="ri">📗</span><span><div>実スプレッドシートを開く</div><div class="rd">入力を変えると見込み・グラフが自動再計算</div></span><span class="rx">›</span></a>
+  <a class="rbtn k" href="https://lookerstudio.google.com/reporting/create?c.mode=edit&amp;ds.connector=googleSheets&amp;ds.spreadsheetId=1mgSqrRFarhfaE5a9dVEpezxmPpaWLWmf5XI1EouI9Hg&amp;ds.refreshFields=true" target="_blank"><span class="ri">📊</span><span><div>Looker Studioで可視化する</div><div class="rd">同じSheetをそのままダッシュボード化</div></span><span class="rx">›</span></a>
+  <a class="rbtn b" href="https://script.google.com/macros/s/AKfycbw7cs8-XATEhRQnCMOcP9K22tPJpJPhNlO75ohGSgrcgy1tVLrG452SssyD3YC0mZhb/exec" target="_blank"><span class="ri">⚙️</span><span><div>Apps Script Webアプリを開く</div><div class="rd">Googleが処理する入口画面</div></span><span class="rx">›</span></a>
+</div>
+<div class="note">※上はGoogle既存（Apps Script＋スプレッドシート＋Looker Studio）で組んだ<b>実物</b>です。リンクは閲覧共有。実構成は要件で変わります。</div>
 
 <div class="verdict">
   <div class="big">見せるは自作。回すはGoogle。</div>
