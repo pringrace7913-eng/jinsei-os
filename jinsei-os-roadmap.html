@@ -86,7 +86,7 @@
   .planner{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px 14px;margin-bottom:10px;}
   .prow{display:flex;justify-content:space-between;align-items:baseline;}
   .plab{font-size:12px;color:var(--sub);font-weight:700;}
-  .pval{font-size:19px;font-weight:800;font-variant-numeric:tabular-nums;} .pval.money{color:var(--money);} .pval.acc{color:var(--accent);}
+  .pval{font-size:19px;font-weight:800;font-variant-numeric:tabular-nums;} .pval.money{color:var(--money);} .pval.acc{color:var(--accent);} .pval.good{color:var(--good);}
   .planner input[type=range]{width:100%;margin-top:9px;-webkit-appearance:none;appearance:none;height:8px;border-radius:6px;background:#0a1430;outline:none;}
   .planner input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:26px;height:26px;border-radius:50%;background:var(--accent);border:3px solid #0a1430;box-shadow:0 0 10px #ffd34d99;cursor:pointer;}
   .planner input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--accent);border:3px solid #0a1430;cursor:pointer;}
@@ -144,6 +144,11 @@
     <div class="kpi money"><div class="n" id="m-take"></div><div class="l">月の手取り</div></div>
     <div class="kpi good"><div class="n">¥32,600</div><div class="l">推奨積立/月</div></div>
     <div class="kpi acc"><div class="n" id="m-pct"></div><div class="l">手取りに占める割合</div></div>
+  </div>
+  <div class="planner">
+    <div class="prow"><span class="plab">💰 毎月いくら積み立てる？</span><span class="pval good" id="mn-save-v">¥32,600</span></div>
+    <input type="range" id="mn-save" min="0" max="100000" step="1000" value="32600">
+    <div class="phint">動かすと、下の図の「生活費」と「老後積立」の配分がすぐ変わります</div>
   </div>
   <div class="scr-title" style="font-size:13px">財務ストラクチャー図 <small>額面→税社保→手取り→生活費/積立</small></div>
   <div class="struct">
@@ -248,28 +253,7 @@ function render(){
   $('#p-av').textContent=p.av; $('#p-name').textContent=p.name; $('#p-desc').innerHTML=p.desc;
   $('#k-income').textContent=p.income; $('#k-take').textContent=man(p.take);
   $('#t-marriage').textContent=p.marriage;
-  // money
-  $('#m-take').textContent=man(p.take);
-  const pct=(invPM/p.take*100); $('#m-pct').textContent=pct.toFixed(1)+'%';
-  // 財務ストラクチャー図
-  const gross=Math.round(p.take/0.79), tax=gross-p.take, life=p.take-invPM, save=invPM;
-  $('#st-gross').textContent=yen(gross);
-  const segs=[['税・社会保険',tax,'#ff6b81'],['生活費',life,'#5ec8ff'],['老後積立',save,'#43d18a']];
-  $('#st-bar').innerHTML=segs.map(([k,v,c])=>{const w=(v/gross*100).toFixed(1);
-    return `<span class="seg" style="width:${w}%;background:${c}">${v/gross>0.12?(v/gross*100).toFixed(0)+'%':''}</span>`;}).join('');
-  $('#st-leg').innerHTML=segs.map(([k,v,c])=>`<span class="it"><span class="sw" style="background:${c}"></span>${k} ${yen(v)}</span>`).join('');
-  $('#st-tree').innerHTML=
-    `<div class="node t-gross"><span class="k">月の額面</span><span class="v">${yen(gross)}</span></div>
-     <div class="child">
-       <div class="node t-tax"><span class="k">− 税・社会保険（約21%）</span><span class="v">−${yen(tax)}</span></div>
-       <div class="node t-take"><span class="k">＝ 手取り</span><span class="v">${yen(p.take)}</span></div>
-       <div class="child">
-         <div class="node t-life"><span class="k">生活費（残差）</span><span class="v">${yen(life)}</span></div>
-         <div class="node t-save"><span class="k">老後積立（年3%運用）</span><span class="v">${yen(save)}</span></div>
-       </div>
-     </div>`;
-  let verdict = pct<10?'手取りに対して<b>1割未満</b>。無理なく積み立てられる水準です。':pct<18?'手取りの<b>約1〜1.5割</b>。固定費の見直しで十分に確保できます。':'手取りに対して<b>やや重め</b>。世帯合算や固定費削減、開始年齢の前倒しで負担を下げられます。';
-  $('#money-insight').innerHTML=`月 ${yen(invPM)}（手取りの<b>${pct.toFixed(1)}%</b>）を積み立てれば、年3%運用で65歳に2,000万に届きます。${verdict}`;
+  renderMoney();
   // roadmap
   const mAge = g==='female'?'30歳':'31歳';
   $('#road-flow').innerHTML=[
@@ -301,7 +285,33 @@ function renderRoad(){
     return `<div class="grow"><span class="gy">${age+y}歳</span><span class="gtrack"><span class="gp" style="width:${(pr/maxBal*100).toFixed(1)}%"></span><span class="gg" style="width:${(gn/maxBal*100).toFixed(1)}%"></span></span><span class="gv">¥${man(bal)}</span></div>`;}).join('');
   $('#rd-insight').innerHTML = save<=0 ? '毎月の積立を動かすと、未来ののびが変わります。まずは少額からでも。' : `毎月 <b>${yen(save)}</b> を ${totYears}年つづけると、元本 ¥${man(principal)} が <b>¥${man(proj)}</b> に。差の <b>¥${man(gain)}</b> が「お金に働いてもらった」分（年3%想定）。`;
 }
+function renderMoney(){
+  const p=P[g], save=+$('#mn-save').value;
+  $('#mn-save-v').textContent=yen(save);
+  $('#m-take').textContent=man(p.take);
+  const pct=(save/p.take*100); $('#m-pct').textContent=pct.toFixed(1)+'%';
+  const gross=Math.round(p.take/0.79), tax=gross-p.take, life=Math.max(0,p.take-save);
+  $('#st-gross').textContent=yen(gross);
+  const segs=[['税・社会保険',tax,'#ff6b81'],['生活費',life,'#5ec8ff'],['老後積立',save,'#43d18a']];
+  $('#st-bar').innerHTML=segs.map(([k,v,c])=>{const w=(v/gross*100).toFixed(1);
+    return `<span class="seg" style="width:${w}%;background:${c}">${v/gross>0.12?(v/gross*100).toFixed(0)+'%':''}</span>`;}).join('');
+  $('#st-leg').innerHTML=segs.map(([k,v,c])=>`<span class="it"><span class="sw" style="background:${c}"></span>${k} ${yen(v)}</span>`).join('');
+  $('#st-tree').innerHTML=
+    `<div class="node t-gross"><span class="k">月の額面</span><span class="v">${yen(gross)}</span></div>
+     <div class="child">
+       <div class="node t-tax"><span class="k">− 税・社会保険（約21%）</span><span class="v">−${yen(tax)}</span></div>
+       <div class="node t-take"><span class="k">＝ 手取り</span><span class="v">${yen(p.take)}</span></div>
+       <div class="child">
+         <div class="node t-life"><span class="k">生活費（残差）</span><span class="v">${yen(life)}</span></div>
+         <div class="node t-save"><span class="k">老後積立</span><span class="v">${yen(save)}</span></div>
+       </div>
+     </div>`;
+  $('#money-insight').innerHTML = save<=0 ? '積立を動かすと、生活費と老後への配分がすぐ変わります。' :
+    save>=invPM ? `月 <b>${yen(save)}</b>（手取りの<b>${pct.toFixed(1)}%</b>）なら、年3%運用で65歳に<b>2,000万に届きます</b>。` :
+    `月 <b>${yen(save)}</b>（手取りの<b>${pct.toFixed(1)}%</b>）。2,000万ペースまで<b>あと月${yen(invPM-save)}</b>（推奨 ${yen(invPM)}）。固定費の見直しで近づけます。`;
+}
 ['#rd-age','#rd-save'].forEach(sel=>{const el=$(sel); if(el)el.addEventListener('input',renderRoad);});
+{const ms=$('#mn-save'); if(ms)ms.addEventListener('input',renderMoney);}
 document.querySelectorAll('.gsw button').forEach(b=>b.addEventListener('click',()=>{
   document.querySelectorAll('.gsw button').forEach(x=>x.classList.remove('on')); b.classList.add('on'); g=b.dataset.g; render();
 }));

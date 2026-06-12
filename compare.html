@@ -64,6 +64,26 @@
   .map .row .k{color:var(--sub);} .map .row .a{color:var(--ink);font-weight:700;text-align:right;}
   .map .row .a b{color:var(--good);}
   .note{font-size:10.5px;color:#6f82b0;line-height:1.55;margin:12px 18px 0;}
+  /* google-native mock — あえて明るく地味に（"回す"版の実物イメージ） */
+  .gmock{margin:10px 16px 2px;background:#eef1f7;border:1px solid #c9d2e3;border-radius:14px;overflow:hidden;color:#1c2c50;}
+  .gmock .gbar{background:#fff;border-bottom:1px solid #d8deec;padding:9px 12px;display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;}
+  .gmock .gdot{width:9px;height:9px;border-radius:50%;flex:0 0 auto;}
+  .gmock .gbody{padding:12px;}
+  .gmock .gtiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+  .gmock .gt{background:#fff;border:1px solid #d8deec;border-radius:9px;padding:10px 5px;text-align:center;}
+  .gmock .gt .n{font-size:17px;font-weight:800;} .gmock .gt .l{font-size:8.5px;color:#5a6b8c;margin-top:3px;}
+  .gmock .gt.b .n{color:#1a73e8;} .gmock .gt.g .n{color:#188038;} .gmock .gt.y .n{color:#b06000;}
+  .gmock .gchart{display:flex;align-items:flex-end;gap:8px;height:78px;margin:18px 2px 2px;}
+  .gmock .gchart .gb{flex:1;background:#1a73e8;border-radius:4px 4px 0 0;position:relative;}
+  .gmock .gchart .gb span{position:absolute;top:-14px;left:0;right:0;text-align:center;font-size:8px;color:#5a6b8c;}
+  .gmock .gcap2{font-size:9px;color:#5a6b8c;text-align:center;margin-top:5px;}
+  .gmock .gtable{margin-top:12px;border:1px solid #d8deec;border-radius:8px;overflow:hidden;background:#fff;}
+  .gmock .gtr{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;font-size:11px;border-bottom:1px solid #eef1f7;}
+  .gmock .gtr:last-child{border-bottom:none;}
+  .gmock .gtr .st{font-weight:700;font-size:9.5px;padding:2px 8px;border-radius:999px;}
+  .gmock .gtr .st.todo{background:#fce8e6;color:#c5221f;} .gmock .gtr .st.done{background:#e6f4ea;color:#188038;}
+  .gmock .ghint{font-size:10px;color:#41506e;line-height:1.5;padding:10px 12px;background:#e3e8f2;border-top:1px solid #d8deec;}
+  .gmock .ghint b{color:#1a3a7a;}
 </style>
 </head>
 <body>
@@ -100,6 +120,32 @@
   <div class="rw"><div class="ax">本番運用向き<small>毎日まわす</small></div><div class="cell s"><span class="mk tri">△</span><small>見せる用</small></div><div class="cell g"><span class="mk cir">◎</span><small>回す用</small></div></div>
 </div>
 <div class="note">◎=得意／○=十分／△=苦手。「△」は欠点ではなく“その用途ではない”という意味です。Google版は手抜きではなく、<b>御社の既存資産（Sheets / Looker）を活かす</b>のが本当のDXです。</div>
+
+<div class="sec">▶ Google既存だと、こう見える（イメージ）</div>
+<div class="gmock">
+  <div class="gbar"><span class="gdot" style="background:#ea4335"></span><span class="gdot" style="background:#fbbc05"></span><span class="gdot" style="background:#34a853"></span><span>みらい通帳（Looker Studio）</span></div>
+  <div class="gbody">
+    <div class="gtiles">
+      <div class="gt b"><div class="n">¥687万</div><div class="l">65歳での見込み</div></div>
+      <div class="gt g"><div class="n">34%</div><div class="l">目標達成率</div></div>
+      <div class="gt y"><div class="n">¥32,600</div><div class="l">毎月の積立</div></div>
+    </div>
+    <div class="gchart">
+      <div class="gb" style="height:30%"><span>40歳</span></div>
+      <div class="gb" style="height:48%"><span>50歳</span></div>
+      <div class="gb" style="height:72%"><span>60歳</span></div>
+      <div class="gb" style="height:100%"><span>65歳</span></div>
+    </div>
+    <div class="gcap2">資産の伸び（年3%想定・仮データ）</div>
+    <div class="gtable">
+      <div class="gtr"><span>つみたてNISAの口座開設</span><span class="st todo">未対応</span></div>
+      <div class="gtr"><span>使ってないサブスクの解約</span><span class="st todo">未対応</span></div>
+      <div class="gtr"><span>健康診断の予約</span><span class="st done">完了</span></div>
+    </div>
+  </div>
+  <div class="ghint">▲ 派手さはないが、<b>御社の誰でも開けて・直せて・履歴が残る</b>。入力は<b>AppSheet</b>、データは<b>スプレッドシート</b>、自動化は<b>GAS</b>。これが"回す"版です。</div>
+</div>
+<div class="note">※上はGoogle既存（Looker Studio／AppSheet）で組んだ場合のイメージ画像です（実埋め込みではありません）。実構成は要件で変わります。</div>
 
 <div class="verdict">
   <div class="big">見せるは自作。回すはGoogle。</div>
